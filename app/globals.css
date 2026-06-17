@@ -1,0 +1,108 @@
+@import "tailwindcss";
+
+/*
+  Design tokens (README "Design Tokens"). Colors are exposed as Tailwind color
+  utilities via the `--color-*` namespace. The accent is driven by the runtime
+  CSS variables --accent / --accent-soft (set by applyAccent), so `bg-accent`
+  and `text-accent` follow the selected theme.
+*/
+@theme {
+  --color-accent: var(--accent, #117a57);
+  --color-accent-soft: var(--accent-soft, #e4f1ea);
+
+  --color-ink: #1d2024;
+  --color-ink-2: #8a8f95;
+  --color-muted: #9aa0a6;
+  --color-eyebrow: #a7a399;
+
+  --color-surface: #fdfcf9;
+  --color-line: #e8e5dd;
+  --color-app: #f7f6f3;
+
+  --color-fill: #efeee9;
+  --color-fill-2: #f1f0eb;
+  --color-dashed: #cfccc3;
+
+  --color-pos: #117a57;
+  --color-pos-bg: #e4f1ea;
+  --color-neg: #b0473b;
+  --color-neg-bg: #f7e9e6;
+
+  --color-bar-prior: #d7e7df;
+  --color-bar-light: #bfe0d0;
+  --color-bar-empty: #ececea;
+
+  --font-sans: var(--font-hanken), system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
+:root {
+  --accent: #117a57;
+  --accent-soft: #e4f1ea;
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--color-app);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* fill the device viewport, including iOS dynamic toolbars */
+  min-height: 100dvh;
+}
+
+input,
+textarea,
+button {
+  font-family: inherit;
+}
+input:focus,
+textarea:focus {
+  outline: none;
+}
+
+/* hidden scrollbars (README: "Scroll: hidden scrollbars") */
+.no-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+/* entrance animations (README "Animations") */
+@keyframes gtIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes gtSheet {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-in {
+  animation: gtIn 0.22s ease-out both;
+}
+.animate-sheet {
+  animation: gtSheet 0.26s ease-out both;
+}

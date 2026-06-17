@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "defaultMode": "acceptEdits",
+    "allow": [
+      "Bash(npm *)",
+      "Bash(npx tsc *)",
+      "Bash(npx next *)",
+      "Bash(npx playwright *)",
+      "Bash(node *)",
+      "Bash(curl *)",
+      "Bash(pgrep *)",
+      "Bash(pkill -f next)",
+      "Bash(pkill -9 -f next)",
+      "Bash(pkill -f \"next dev\")",
+      "Bash(pkill -f \"next-server\")",
+      "Skill(update-config)"
+    ]
+  }
+}

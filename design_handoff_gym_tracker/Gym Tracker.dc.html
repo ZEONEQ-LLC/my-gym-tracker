@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body { margin: 0; }
+  input, textarea, button { font-family: inherit; }
+  input:focus, textarea:focus { outline: none; }
+  .gt-scroll::-webkit-scrollbar { width: 0; height: 0; }
+  @keyframes gtIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  @keyframes gtSheet { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="--accent:#117a57;--accent-soft:#e4f1ea;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px 16px;background:#e9e8e3;font-family:'Hanken Grotesk',system-ui,sans-serif;color:#1d2024">
+
+  <div style="width:440px;height:956px;background:#f7f6f3;border-radius:60px;box-shadow:0 1px 0 1px rgba(0,0,0,0.04),0 30px 70px -22px rgba(40,40,30,0.45);border:11px solid #16181b;overflow:hidden;position:relative;display:flex;flex-direction:column">
+
+    <!-- status bar (Dynamic Island) -->
+    <div style="height:54px;flex:0 0 54px;display:flex;align-items:center;justify-content:space-between;padding:14px 30px 0 34px;font-weight:600;position:relative">
+      <span style="font:600 15px/1 'JetBrains Mono',monospace;letter-spacing:-0.5px">9:41</span>
+      <div style="position:absolute;top:11px;left:50%;transform:translateX(-50%);width:120px;height:34px;background:#16181b;border-radius:18px"></div>
+      <div style="display:flex;align-items:center;gap:6px">
+        <svg width="18" height="12" viewBox="0 0 17 11" fill="#1d2024"><rect x="0" y="7" width="3" height="4" rx="1"></rect><rect x="4.5" y="5" width="3" height="6" rx="1"></rect><rect x="9" y="2.5" width="3" height="8.5" rx="1"></rect><rect x="13.5" y="0" width="3" height="11" rx="1"></rect></svg>
+        <svg width="25" height="12" viewBox="0 0 24 11" fill="none"><rect x="0.5" y="0.5" width="20" height="10" rx="2.5" stroke="#1d2024" opacity="0.5"></rect><rect x="2" y="2" width="15" height="7" rx="1.3" fill="#1d2024"></rect><rect x="21.5" y="3.5" width="1.6" height="4" rx="0.8" fill="#1d2024" opacity="0.5"></rect></svg>
+      </div>
+    </div>
+    <!-- /status bar -->
+    <div style="display:none"></div>
+
+    <!-- MAIN SCROLL -->
+    <div class="gt-scroll" style="flex:1;overflow-y:auto;overflow-x:hidden;position:relative">
+
+      <!-- ===================== LIST (tabs) ===================== -->
+      <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+      <div style="min-height:100%;padding-bottom:112px">
+
+        <!-- ---- EXERCISES TAB ---- -->
+        <sc-if value="{{ isExercises }}" hint-placeholder-val="{{ true }}">
+        <div data-screen-label="Übungsliste">
+          <div style="padding:14px 22px 8px">
+            <div style="font-size:13px;font-weight:600;color:var(--accent,#117a57);letter-spacing:0.3px">{{ profile.greeting }}</div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-top:2px">
+              <h1 style="margin:0;font-size:30px;font-weight:800;letter-spacing:-0.8px">Übungen</h1>
+              <div style="text-align:right;font-size:12.5px;color:#8a8f95;line-height:1.3;max-width:150px">{{ profile.displayGoal }}</div>
+            </div>
+          </div>
+
+          <div style="padding:6px 22px 14px">
+            <div style="display:flex;align-items:center;gap:9px;height:44px;padding:0 14px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px">
+              <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="8" cy="8" r="6" stroke="#9aa0a6" stroke-width="1.7"></circle><line x1="12.5" y1="12.5" x2="16" y2="16" stroke="#9aa0a6" stroke-width="1.7" stroke-linecap="round"></line></svg>
+              <input value="{{ search }}" onChange="{{ onSearch }}" placeholder="Übung suchen" style="flex:1;border:none;background:none;font-size:15.5px;color:#1d2024" />
+            </div>
+          </div>
+
+          <sc-for list="{{ groups }}" as="group" hint-placeholder-count="2">
+          <div style="padding:0 22px;margin-top:6px">
+            <div style="font-size:11.5px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:#a7a39a;margin:14px 2px 10px">{{ group.name }}</div>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <sc-for list="{{ group.items }}" as="d" hint-placeholder-count="3">
+              <div style="display:flex;align-items:stretch;background:#fdfcf9;border:1px solid {{ d.cardBorder }};border-radius:17px;overflow:hidden">
+                <button data-id="{{ d.id }}" onclick="{{ onOpenExercise }}" style="flex:1;min-width:0;display:flex;align-items:center;gap:13px;text-align:left;padding:12px;background:none;border:none;cursor:pointer">
+                  <div style="position:relative;flex:0 0 54px;height:54px">
+                    <div style="width:54px;height:54px;border-radius:13px;overflow:hidden;background:#efeee9;display:flex;align-items:center;justify-content:center">{{ d.photoEl }}</div>
+                    <sc-if value="{{ d.doneToday }}" hint-placeholder-val="{{ false }}">
+                      <div style="position:absolute;bottom:-4px;right:-4px;width:23px;height:23px;border-radius:50%;background:var(--accent,#117a57);border:2.5px solid #fdfcf9;display:flex;align-items:center;justify-content:center">
+                        <svg width="12" height="12" viewBox="0 0 14 14" fill="none"><path d="M3 7.5l2.6 2.6L11 4.5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                      </div>
+                    </sc-if>
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:16px;font-weight:700;letter-spacing:-0.3px;line-height:1.15">{{ d.name }}</div>
+                    <sc-if value="{{ d.hasVariants }}" hint-placeholder-val="{{ true }}">
+                      <div style="display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:2px 8px;background:var(--accent-soft,#e4f1ea);border-radius:6px;font-size:11px;font-weight:600;color:var(--accent,#117a57)">{{ d.variantCount }} Varianten</div>
+                    </sc-if>
+                    <sc-if value="{{ d.noVariants }}" hint-placeholder-val="{{ true }}">
+                      <div style="margin-top:4px;font-size:12.5px;font-weight:{{ d.lastLineWeight }};color:{{ d.lastLineColor }}">{{ d.lastLine }}</div>
+                    </sc-if>
+                  </div>
+                </button>
+                <sc-if value="{{ d.notDoneToday }}" hint-placeholder-val="{{ true }}">
+                <button data-id="{{ d.id }}" onclick="{{ onQuickLog }}" style="flex:0 0 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;border-left:1px solid #f0eee9;background:var(--accent-soft,#e4f1ea);cursor:pointer;color:var(--accent,#117a57)">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="10" stroke="var(--accent,#117a57)" stroke-width="1.6"></circle><path d="M11 6.5v9M6.5 11h9" stroke="var(--accent,#117a57)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                  <span style="font-size:10px;font-weight:700;letter-spacing:0.2px">Eintragen</span>
+                </button>
+                </sc-if>
+                <sc-if value="{{ d.doneToday }}" hint-placeholder-val="{{ false }}">
+                <button data-id="{{ d.id }}" onclick="{{ onQuickLog }}" style="flex:0 0 64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;background:var(--accent,#117a57);cursor:pointer;color:#fff">
+                  <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M5 11.5l4 4 8-9" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                  <span style="font-size:10px;font-weight:700;letter-spacing:0.2px">Erledigt</span>
+                </button>
+                </sc-if>
+              </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-for>
+
+          <div style="padding:18px 22px 4px">
+            <button onclick="{{ openNewExercise }}" style="display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:54px;border:1.5px dashed #cfccc3;border-radius:16px;background:none;cursor:pointer;color:var(--accent,#117a57);font-size:15.5px;font-weight:700">
+              <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="var(--accent,#117a57)" stroke-width="2" stroke-linecap="round"></path></svg>
+              Neue Übung
+            </button>
+          </div>
+        </div>
+        </sc-if>
+
+        <!-- ---- HISTORY TAB ---- -->
+        <sc-if value="{{ isHistory }}" hint-placeholder-val="{{ true }}">
+        <div data-screen-label="Verlauf">
+          <div style="padding:14px 22px 10px">
+            <h1 style="margin:0;font-size:30px;font-weight:800;letter-spacing:-0.8px">Verlauf</h1>
+            <div style="font-size:13.5px;color:#8a8f95;margin-top:2px">Fortschritt & Konsequenz</div>
+          </div>
+
+          <sc-if value="{{ prog.hasData }}" hint-placeholder-val="{{ true }}">
+          <div style="padding:0 22px;display:flex;flex-direction:column;gap:16px">
+
+            <!-- consistency stat tiles -->
+            <div style="display:flex;gap:10px">
+              <div style="flex:1;padding:15px 12px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:16px;text-align:center">
+                <div style="font:800 27px/1 'JetBrains Mono',monospace;color:var(--accent,#117a57)">{{ prog.thisWeek }}</div>
+                <div style="font-size:11.5px;color:#8a8f95;margin-top:7px;line-height:1.2">Diese<br/>Woche</div>
+              </div>
+              <div style="flex:1;padding:15px 12px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:16px;text-align:center">
+                <div style="display:flex;align-items:baseline;justify-content:center;gap:3px">
+                  <div style="font:800 27px/1 'JetBrains Mono',monospace;color:var(--accent,#117a57)">{{ prog.streak }}</div>
+                  <span style="font-size:12px;color:var(--accent,#117a57);font-weight:700">🔥</span>
+                </div>
+                <div style="font-size:11.5px;color:#8a8f95;margin-top:7px;line-height:1.2">Wochen<br/>Serie</div>
+              </div>
+              <div style="flex:1;padding:15px 12px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:16px;text-align:center">
+                <div style="font:800 27px/1 'JetBrains Mono',monospace;color:#1d2024">{{ prog.total }}</div>
+                <div style="font-size:11.5px;color:#8a8f95;margin-top:7px;line-height:1.2">Trainings<br/>total</div>
+              </div>
+            </div>
+
+            <!-- weekly consistency bars -->
+            <div style="background:#fdfcf9;border:1px solid #e8e5dd;border-radius:18px;padding:16px 17px 13px">
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <span style="font-size:16px;font-weight:700">Konsequenz</span>
+                <span style="font-size:12px;color:#8a8f95;white-space:nowrap">Ziel {{ prog.weekGoal }}× / Woche</span>
+              </div>
+              <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:7px;height:96px;margin-top:16px">
+                <sc-for list="{{ prog.weeks }}" as="w" hint-placeholder-count="8">
+                <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+                  <span style="font:700 10px/1 'JetBrains Mono',monospace;color:{{ w.countColor }}">{{ w.count }}</span>
+                  <div style="width:100%;max-width:26px;border-radius:6px 6px 3px 3px;background:{{ w.fill }};height:{{ w.h }}%"></div>
+                  <span style="font-size:9px;color:{{ w.labelColor }};font-weight:600">{{ w.label }}</span>
+                </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- per-exercise progress -->
+            <div>
+              <div style="display:flex;align-items:center;justify-content:space-between;margin:2px 2px 11px">
+                <span style="font-size:16px;font-weight:700">Fortschritt</span>
+                <span style="font-size:12px;color:#aab0b5">Bestgewicht</span>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ prog.exercises }}" as="p" hint-placeholder-count="4">
+                <div style="display:flex;align-items:center;gap:12px;padding:13px 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:15px">
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:15px;font-weight:700;letter-spacing:-0.2px">{{ p.name }}</div>
+                    <div style="font-size:12px;color:#9aa0a6;margin-top:2px">{{ p.sub }}</div>
+                  </div>
+                  <span style="font:700 17px/1 'JetBrains Mono',monospace">{{ p.best }}<span style="font-size:10px;color:#9aa0a6;font-weight:600"> kg</span></span>
+                  <div style="flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;padding:5px 9px;border-radius:9px;background:{{ p.deltaBg }};font-size:12.5px;font-weight:700;color:{{ p.deltaColor }};white-space:nowrap">{{ p.deltaText }}</div>
+                </div>
+                </sc-for>
+              </div>
+            </div>
+
+            <!-- full history -->
+            <div>
+              <div style="font-size:16px;font-weight:700;margin:2px 2px 11px">Alle Trainings</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <sc-for list="{{ recent }}" as="r" hint-placeholder-count="6">
+                <div style="display:flex;align-items:center;gap:13px;padding:13px 14px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:15px">
+                  <div style="flex:0 0 46px;height:46px;border-radius:11px;background:var(--accent-soft,#e4f1ea);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1">
+                    <span style="font:700 16px/1 'JetBrains Mono',monospace;color:var(--accent,#117a57)">{{ r.day }}</span>
+                    <span style="font-size:9px;font-weight:700;color:var(--accent,#117a57);text-transform:uppercase;margin-top:2px">{{ r.mon }}</span>
+                  </div>
+                  <div style="flex:1;min-width:0">
+                    <div style="font-size:15px;font-weight:700;letter-spacing:-0.2px">{{ r.exercise }}</div>
+                    <div style="font-size:12.5px;color:#9aa0a6;margin-top:2px">{{ r.setText }}</div>
+                  </div>
+                  <span style="font:700 16px/1 'JetBrains Mono',monospace">{{ r.topWeight }}<span style="font-size:10px;color:#9aa0a6;font-weight:600"> kg</span></span>
+                </div>
+                </sc-for>
+              </div>
+            </div>
+
+          </div>
+          </sc-if>
+          <sc-if value="{{ prog.noData }}" hint-placeholder-val="{{ true }}">
+          <div style="margin:40px 22px;padding:40px 24px;text-align:center;color:#9aa0a6;font-size:14px;border:1px dashed #d8d5cd;border-radius:18px;line-height:1.5">Noch keine Trainings erfasst.<br/>Trag dein erstes Workout ein, um<br/>Fortschritt & Konsequenz zu sehen.</div>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <!-- ---- PROFILE TAB ---- -->
+        <sc-if value="{{ isProfile }}" hint-placeholder-val="{{ true }}">
+        <div data-screen-label="Profil">
+          <div style="padding:14px 22px 12px">
+            <h1 style="margin:0;font-size:30px;font-weight:800;letter-spacing:-0.8px">Profil</h1>
+            <div style="font-size:13.5px;color:#8a8f95;margin-top:2px">Deine Trainingsangaben</div>
+          </div>
+          <div style="padding:0 22px;display:flex;flex-direction:column;gap:16px">
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:0 2px 7px">Name</label>
+              <input value="{{ profile.name }}" data-field="name" onChange="{{ onProfileInput }}" placeholder="Dein Name" style="width:100%;height:50px;padding:0 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:16px;color:#1d2024" />
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:0 2px 7px">Trainingsziel</label>
+              <input value="{{ profile.goal }}" data-field="goal" onChange="{{ onProfileInput }}" placeholder="z.B. Kraftaufbau & Rücken" style="width:100%;height:50px;padding:0 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:16px;color:#1d2024" />
+            </div>
+            <div>
+              <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:0 2px 7px">Ausdauer / Aufwärmen</label>
+              <textarea data-field="warmup" value="{{ profile.warmup }}" onChange="{{ onProfileInput }}" placeholder="Wie wärmst du dich auf?" style="width:100%;min-height:84px;padding:13px 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:15px;line-height:1.5;color:#1d2024;resize:none"></textarea>
+            </div>
+            <div style="margin-top:6px;display:flex;gap:11px">
+              <div style="flex:1;padding:16px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:15px;text-align:center">
+                <div style="font:800 26px/1 'JetBrains Mono',monospace;color:var(--accent,#117a57)">{{ stats.exercises }}</div>
+                <div style="font-size:12px;color:#8a8f95;margin-top:6px">Übungen</div>
+              </div>
+              <div style="flex:1;padding:16px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:15px;text-align:center">
+                <div style="font:800 26px/1 'JetBrains Mono',monospace;color:var(--accent,#117a57)">{{ stats.sessions }}</div>
+                <div style="font-size:12px;color:#8a8f95;margin-top:6px">Trainings</div>
+              </div>
+            </div>
+            <div style="font-size:11.5px;color:#b0aca3;text-align:center;margin-top:4px;line-height:1.5">Single-User-Prototyp · Daten lokal gespeichert<br/>Basis für die spätere Umsetzung</div>
+          </div>
+        </div>
+        </sc-if>
+
+      </div>
+      </sc-if>
+
+      <!-- ===================== DEVICE DETAIL ===================== -->
+      <sc-if value="{{ isExercise }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Übungsdetail" style="min-height:100%;padding-bottom:118px">
+        <div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:6px;padding:8px 16px 10px;background:linear-gradient(#f7f6f3,#f7f6f3 70%,rgba(247,246,243,0))">
+          <button onclick="{{ backToList }}" style="display:flex;align-items:center;justify-content:center;width:38px;height:38px;border:none;background:none;cursor:pointer">
+            <svg width="11" height="18" viewBox="0 0 11 18" fill="none"><path d="M9 1.5L2 9L9 16.5" stroke="#1d2024" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+          </button>
+          <span style="font-size:14px;color:#8a8f95;font-weight:600">Übungen</span>
+        </div>
+
+        <div style="padding:2px 22px 0">
+          <div style="display:flex;gap:15px;align-items:center">
+            <div style="position:relative;flex:0 0 76px;height:76px">
+              <label style="display:block;width:76px;height:76px;border-radius:17px;overflow:hidden;cursor:pointer">
+                <input type="file" accept="image/*" onChange="{{ onExercisePhoto }}" style="display:none" />
+                {{ dev.photoEl }}
+              </label>
+              <sc-if value="{{ dev.hasPhoto }}" hint-placeholder-val="{{ false }}">
+              <button onclick="{{ removeExercisePhoto }}" style="position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:2px solid #f7f6f3;background:#1d2024;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0">
+                <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M3 3l6 6M9 3l-6 6" stroke="#fff" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </button>
+              </sc-if>
+            </div>
+            <div style="flex:1;min-width:0">
+              <div style="font-size:11.5px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#a7a399">{{ dev.group }}</div>
+              <h1 style="margin:3px 0 0;font-size:23px;font-weight:800;letter-spacing:-0.6px;line-height:1.1">{{ dev.name }}</h1>
+            </div>
+          </div>
+
+          <div style="display:inline-flex;align-items:center;gap:7px;margin-top:14px;padding:7px 13px;background:var(--accent-soft,#e4f1ea);border-radius:10px;font-size:13.5px;font-weight:700;color:var(--accent,#117a57);white-space:nowrap">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="flex:0 0 14px"><circle cx="7" cy="7" r="5.5" stroke="var(--accent,#117a57)" stroke-width="1.5"></circle><circle cx="7" cy="7" r="1.6" fill="var(--accent,#117a57)"></circle></svg>
+            Ziel · {{ dev.targetText }}
+          </div>
+
+          <!-- variant toggle -->
+          <sc-if value="{{ dev.hasVariants }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:7px;margin-top:16px;padding:4px;background:#ecebe5;border-radius:13px">
+            <sc-for list="{{ dev.variants }}" as="v" hint-placeholder-count="2">
+            <button data-variant="{{ v.name }}" onclick="{{ onSetVariant }}" style="flex:1;height:40px;border:none;border-radius:10px;cursor:pointer;font-size:14.5px;font-weight:700;letter-spacing:-0.2px;background:{{ v.bg }};color:{{ v.color }};box-shadow:{{ v.shadow }}">{{ v.name }}</button>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <!-- settings card -->
+          <div style="margin-top:18px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:18px;overflow:hidden">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:15px 17px 12px">
+              <div style="display:flex;align-items:center;gap:9px">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="2.4" stroke="var(--accent,#117a57)" stroke-width="1.7"></circle><path d="M9 1.5v2.4M9 14.1v2.4M16.5 9h-2.4M3.9 9H1.5M14.3 3.7l-1.7 1.7M5.4 12.6l-1.7 1.7M14.3 14.3l-1.7-1.7M5.4 5.4L3.7 3.7" stroke="var(--accent,#117a57)" stroke-width="1.7" stroke-linecap="round"></path></svg>
+                <span style="font-size:16px;font-weight:700">Einstellungen</span>
+              </div>
+              <button onclick="{{ openEdit }}" style="font-size:13.5px;font-weight:700;color:var(--accent,#117a57);background:none;border:none;cursor:pointer;padding:4px">Bearbeiten</button>
+            </div>
+            <sc-if value="{{ dev.hasParams }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <sc-for list="{{ dev.paramRows }}" as="p" hint-placeholder-count="4">
+              <div style="display:flex;align-items:center;justify-content:space-between;padding:11px 17px;border-top:1px solid #f0eee9">
+                <span style="font-size:15px;color:#55595e">{{ p.name }}</span>
+                <span style="font:700 15px/1 'JetBrains Mono',monospace;color:{{ p.valColor }}">{{ p.display }}</span>
+              </div>
+              </sc-for>
+            </div>
+            </sc-if>
+            <sc-if value="{{ dev.noParams }}" hint-placeholder-val="{{ true }}">
+            <div style="padding:6px 17px 18px;text-align:center;color:#9aa0a6;font-size:13.5px">Noch keine Einstellungen erfasst.</div>
+            </sc-if>
+          </div>
+
+          <!-- notes -->
+          <sc-if value="{{ dev.hasNote }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:13px;display:flex;gap:11px;padding:14px 16px;background:var(--accent-soft,#e4f1ea);border-radius:15px">
+            <svg width="17" height="17" viewBox="0 0 18 18" fill="none" style="flex:0 0 17px;margin-top:1px"><circle cx="9" cy="9" r="7.2" stroke="var(--accent,#117a57)" stroke-width="1.6"></circle><path d="M9 5v4.6M9 12.4h0.01" stroke="var(--accent,#117a57)" stroke-width="1.8" stroke-linecap="round"></path></svg>
+            <div style="font-size:13.5px;line-height:1.5;color:#36603f">{{ dev.note }}</div>
+          </div>
+          </sc-if>
+
+          <!-- progress -->
+          <sc-if value="{{ dev.hasBars }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:18px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:18px;padding:16px 17px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:16px;font-weight:700">Fortschritt</span>
+              <span style="font-size:12.5px;color:#8a8f95">Bestwert <b style="font-family:'JetBrains Mono',monospace;color:#1d2024">{{ dev.best }} kg</b></span>
+            </div>
+            <div style="display:flex;align-items:flex-end;justify-content:space-between;gap:8px;height:104px;margin-top:16px">
+              <sc-for list="{{ dev.bars }}" as="bar" hint-placeholder-count="5">
+              <div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end">
+                <span style="font:700 11px/1 'JetBrains Mono',monospace;color:#6b7177">{{ bar.weight }}</span>
+                <div style="width:100%;max-width:34px;border-radius:7px 7px 4px 4px;background:{{ bar.fill }};height:{{ bar.h }}%"></div>
+                <span style="font-size:10px;color:#aab0b5">{{ bar.label }}</span>
+              </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+
+          <!-- history -->
+          <sc-if value="{{ dev.hasHistory }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:20px">
+            <div style="font-size:16px;font-weight:700;margin:0 2px 11px">Bisherige Trainings</div>
+            <div style="display:flex;flex-direction:column;gap:11px">
+              <sc-for list="{{ dev.history }}" as="h" hint-placeholder-count="3">
+              <div style="background:#fdfcf9;border:1px solid #e8e5dd;border-radius:15px;padding:13px 15px">
+                <div style="display:flex;align-items:center;justify-content:space-between">
+                  <span style="font-size:14.5px;font-weight:700">{{ h.date }}</span>
+                  <span style="font-size:12px;color:#9aa0a6">{{ h.rel }}</span>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:7px;margin-top:11px">
+                  <sc-for list="{{ h.sets }}" as="s" hint-placeholder-count="3">
+                  <span style="display:inline-flex;align-items:center;padding:5px 10px;background:#f3f2ee;border-radius:8px;font:600 13px/1 'JetBrains Mono',monospace;color:#3a3e43">{{ s.label }}</span>
+                  </sc-for>
+                </div>
+                <sc-if value="{{ h.hasNote }}" hint-placeholder-val="{{ true }}">
+                <div style="margin-top:10px;font-size:13px;color:#8a8f95;font-style:italic">{{ h.note }}</div>
+                </sc-if>
+              </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+          <sc-if value="{{ dev.noHistory }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:20px;padding:30px 20px;text-align:center;color:#9aa0a6;font-size:14px;border:1px dashed #d8d5cd;border-radius:18px;line-height:1.5">Noch kein Training auf dieser Übung.<br/>Trag dein erstes Workout ein.</div>
+          </sc-if>
+        </div>
+
+        <!-- floating log button -->
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:16px 22px 32px;background:linear-gradient(rgba(247,246,243,0),#f7f6f3 38%)">
+          <button onclick="{{ openLog }}" style="display:flex;align-items:center;justify-content:center;gap:9px;width:100%;height:56px;border:none;border-radius:16px;background:var(--accent,#117a57);color:#fff;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 10px 22px -8px var(--accent,#117a57)">
+            <svg width="19" height="19" viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="#fff" stroke-width="2.2" stroke-linecap="round"></path></svg>
+            Training eintragen
+          </button>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== EDIT SETTINGS ===================== -->
+      <sc-if value="{{ isEdit }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Einstellungen bearbeiten" style="min-height:100%;background:#f7f6f3;padding-bottom:30px">
+        <div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#f7f6f3;border-bottom:1px solid #eceae4">
+          <button onclick="{{ cancelEdit }}" style="font-size:15px;color:#8a8f95;font-weight:600;background:none;border:none;cursor:pointer;padding:6px 4px">Abbrechen</button>
+          <span style="font-size:16px;font-weight:700">Einstellungen</span>
+          <button onclick="{{ saveEdit }}" style="font-size:15px;color:var(--accent,#117a57);font-weight:700;background:none;border:none;cursor:pointer;padding:6px 4px">Sichern</button>
+        </div>
+        <div style="padding:16px 22px 0">
+          <div style="font-size:13px;color:#8a8f95">{{ edit.context }}</div>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:18px 2px 8px">Zielvorgabe</label>
+          <div style="display:flex;gap:11px">
+            <div style="flex:1;display:flex;align-items:center;gap:10px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;padding:0 8px 0 14px;height:50px">
+              <input value="{{ edit.targetSets }}" data-field="targetSets" onChange="{{ onEditTarget }}" inputmode="numeric" style="flex:1;min-width:0;width:100%;border:none;background:none;font:700 18px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <span style="font-size:13px;color:#9aa0a6;font-weight:600">Sätze</span>
+            </div>
+            <div style="display:flex;align-items:center;font-size:15px;color:#b6b2a8;font-weight:700">×</div>
+            <div style="flex:1;display:flex;align-items:center;gap:10px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;padding:0 8px 0 14px;height:50px">
+              <input value="{{ edit.targetReps }}" data-field="targetReps" onChange="{{ onEditTarget }}" inputmode="numeric" style="flex:1;min-width:0;width:100%;border:none;background:none;font:700 18px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <span style="font-size:13px;color:#9aa0a6;font-weight:600">Wdh</span>
+            </div>
+          </div>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:20px 2px 8px">Einstellungen</label>
+          <div style="background:#fdfcf9;border:1px solid #e8e5dd;border-radius:16px;overflow:hidden">
+            <sc-for list="{{ edit.rows }}" as="row" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 12px 9px 14px;border-top:1px solid #f0eee9">
+              <input value="{{ row.name }}" data-idx="{{ row.i }}" data-kind="name" onChange="{{ onEditInput }}" placeholder="Parameter" style="flex:1.3;min-width:0;border:none;background:none;font-size:15px;font-weight:600;color:#1d2024" />
+              <input value="{{ row.value }}" data-idx="{{ row.i }}" data-kind="value" onChange="{{ onEditInput }}" placeholder="Wert" style="flex:1;min-width:0;border:none;background:#f5f4f0;border-radius:9px;height:38px;padding:0 12px;font:600 15px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <button data-idx="{{ row.i }}" onclick="{{ onRemoveParam }}" style="flex:0 0 30px;height:30px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#f2f0eb"></circle><path d="M5.5 9h7" stroke="#b0473b" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </button>
+            </div>
+            </sc-for>
+            <button onclick="{{ addParam }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:13px 14px;border:none;border-top:1px solid #f0eee9;background:none;cursor:pointer;color:var(--accent,#117a57);font-size:14.5px;font-weight:700">
+              <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="var(--accent,#117a57)" stroke-width="1.9" stroke-linecap="round"></path></svg>
+              Parameter hinzufügen
+            </button>
+          </div>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:22px 2px 8px">Zu beachten</label>
+          <textarea data-field="note" value="{{ edit.note }}" onChange="{{ onEditNote }}" placeholder="Hinweise zu dieser Übung" style="width:100%;min-height:90px;padding:13px 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:15px;line-height:1.5;color:#1d2024;resize:none"></textarea>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== NEW DEVICE ===================== -->
+      <sc-if value="{{ isNewExercise }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Neue Übung" style="min-height:100%;background:#f7f6f3;padding-bottom:30px">
+        <div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#f7f6f3;border-bottom:1px solid #eceae4">
+          <button onclick="{{ cancelNewExercise }}" style="font-size:15px;color:#8a8f95;font-weight:600;background:none;border:none;cursor:pointer;padding:6px 4px">Abbrechen</button>
+          <span style="font-size:16px;font-weight:700">Neue Übung</span>
+          <button onclick="{{ saveNewExercise }}" style="font-size:15px;font-weight:700;background:none;border:none;cursor:pointer;padding:6px 4px;color:{{ nd.saveColor }}">Sichern</button>
+        </div>
+
+        <div style="padding:16px 22px 0">
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:0 2px 8px">Name</label>
+          <input value="{{ nd.name }}" onChange="{{ onNdName }}" placeholder="z.B. Beinpresse" style="width:100%;height:50px;padding:0 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:16px;color:#1d2024" />
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:22px 2px 8px">Foto</label>
+          <div style="display:flex;align-items:center;gap:13px">
+            <label style="position:relative;flex:0 0 76px;height:76px;border-radius:17px;overflow:hidden;cursor:pointer;display:block">
+              <input type="file" accept="image/*" onChange="{{ onNdPhoto }}" style="display:none" />
+              {{ nd.photoEl }}
+            </label>
+            <div style="flex:1;min-width:0">
+              <sc-if value="{{ nd.noPhoto }}" hint-placeholder-val="{{ true }}">
+              <div style="font-size:13.5px;color:#8a8f95;line-height:1.45">Tippe links, um ein Foto vom Gerät aufzunehmen oder hochzuladen.</div>
+              </sc-if>
+              <sc-if value="{{ nd.hasPhoto }}" hint-placeholder-val="{{ false }}">
+              <button onclick="{{ removeNdPhoto }}" style="font-size:13.5px;font-weight:700;color:#b0473b;background:none;border:none;cursor:pointer;padding:4px 0">Foto entfernen</button>
+              </sc-if>
+            </div>
+          </div>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:22px 2px 8px">Kategorie</label>
+          <div style="display:flex;flex-wrap:wrap;gap:8px">
+            <sc-for list="{{ nd.groupChips }}" as="g" hint-placeholder-count="2">
+            <button data-group="{{ g.name }}" onclick="{{ onNdGroup }}" style="padding:9px 14px;border:1px solid {{ g.border }};border-radius:11px;background:{{ g.bg }};cursor:pointer;font-size:14px;font-weight:600;color:{{ g.color }}">{{ g.name }}</button>
+            </sc-for>
+          </div>
+          <input value="{{ nd.customGroup }}" onChange="{{ onNdCustomGroup }}" placeholder="oder neue Kategorie eingeben" style="width:100%;height:46px;margin-top:9px;padding:0 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:15px;color:#1d2024" />
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 2px 0">
+            <div>
+              <div style="font-size:15.5px;font-weight:700">Varianten</div>
+              <div style="font-size:12.5px;color:#9aa0a6;margin-top:1px">z.B. Ruderzug / Brustpresse</div>
+            </div>
+            <button onclick="{{ toggleNdVariants }}" style="position:relative;width:50px;height:30px;border:none;border-radius:15px;cursor:pointer;background:{{ nd.toggleBg }};transition:background 0.15s">
+              <span style="position:absolute;top:3px;left:{{ nd.toggleLeft }};width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,0.25);transition:left 0.15s"></span>
+            </button>
+          </div>
+
+          <sc-if value="{{ nd.useVariants }}" hint-placeholder-val="{{ true }}">
+          <div style="margin-top:12px;display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ nd.variantRows }}" as="v" hint-placeholder-count="2">
+            <div style="display:flex;align-items:center;gap:9px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;padding:7px 9px 7px 14px">
+              <span style="flex:0 0 20px;font:700 13px/1 'JetBrains Mono',monospace;color:#aab0b5">{{ v.num }}</span>
+              <input value="{{ v.name }}" data-idx="{{ v.i }}" onChange="{{ onNdVariantInput }}" placeholder="Variantenname" style="flex:1;min-width:0;border:none;background:none;font-size:15px;font-weight:600;color:#1d2024" />
+              <button data-idx="{{ v.i }}" onclick="{{ onNdRemoveVariant }}" style="flex:0 0 30px;height:30px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ v.removeOpacity }}">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#f2f0eb"></circle><path d="M5.5 9h7" stroke="#b0473b" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </button>
+            </div>
+            </sc-for>
+            <button onclick="{{ onNdAddVariant }}" style="display:flex;align-items:center;justify-content:center;gap:7px;width:100%;height:42px;border:1.5px dashed #d3d0c8;border-radius:12px;background:none;cursor:pointer;color:#6b7177;font-size:14px;font-weight:700">
+              <svg width="15" height="15" viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="#6b7177" stroke-width="1.9" stroke-linecap="round"></path></svg>
+              Variante hinzufügen
+            </button>
+          </div>
+          </sc-if>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:24px 2px 8px">Zielvorgabe</label>
+          <div style="display:flex;gap:11px">
+            <div style="flex:1;display:flex;align-items:center;gap:10px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;padding:0 8px 0 14px;height:50px">
+              <input value="{{ nd.targetSets }}" data-field="targetSets" onChange="{{ onNdTarget }}" inputmode="numeric" style="flex:1;min-width:0;width:100%;border:none;background:none;font:700 18px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <span style="font-size:13px;color:#9aa0a6;font-weight:600">Sätze</span>
+            </div>
+            <div style="display:flex;align-items:center;font-size:15px;color:#b6b2a8;font-weight:700">×</div>
+            <div style="flex:1;display:flex;align-items:center;gap:10px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;padding:0 8px 0 14px;height:50px">
+              <input value="{{ nd.targetReps }}" data-field="targetReps" onChange="{{ onNdTarget }}" inputmode="numeric" style="flex:1;min-width:0;width:100%;border:none;background:none;font:700 18px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <span style="font-size:13px;color:#9aa0a6;font-weight:600">Wdh</span>
+            </div>
+          </div>
+          <div style="font-size:12.5px;color:#9aa0a6;margin:8px 2px 0;line-height:1.45">Füllt beim Eintragen die Sätze automatisch vor.</div>
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:24px 2px 10px">
+            <label style="font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399">Einstellungs-Eigenschaften</label>
+          </div>
+          <div style="font-size:12.5px;color:#9aa0a6;margin:-4px 2px 11px;line-height:1.45">{{ nd.paramHint }}</div>
+          <div style="background:#fdfcf9;border:1px solid #e8e5dd;border-radius:16px;overflow:hidden">
+            <sc-for list="{{ nd.paramRows }}" as="row" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:10px;padding:9px 12px 9px 14px;border-top:1px solid #f0eee9">
+              <input value="{{ row.name }}" data-idx="{{ row.i }}" data-kind="name" onChange="{{ onNdParamInput }}" placeholder="Eigenschaft (z.B. Sitz)" style="flex:1.3;min-width:0;border:none;background:none;font-size:15px;font-weight:600;color:#1d2024" />
+              <input value="{{ row.value }}" data-idx="{{ row.i }}" data-kind="value" onChange="{{ onNdParamInput }}" placeholder="{{ nd.valuePlaceholder }}" style="flex:1;min-width:0;border:none;background:#f5f4f0;border-radius:9px;height:38px;padding:0 12px;font:600 15px/1 'JetBrains Mono',monospace;color:#1d2024" />
+              <button data-idx="{{ row.i }}" onclick="{{ onNdRemoveParam }}" style="flex:0 0 30px;height:30px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center">
+                <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#f2f0eb"></circle><path d="M5.5 9h7" stroke="#b0473b" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </button>
+            </div>
+            </sc-for>
+            <button onclick="{{ onNdAddParam }}" style="display:flex;align-items:center;gap:8px;width:100%;padding:13px 14px;border:none;border-top:1px solid #f0eee9;background:none;cursor:pointer;color:var(--accent,#117a57);font-size:14.5px;font-weight:700">
+              <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="var(--accent,#117a57)" stroke-width="1.9" stroke-linecap="round"></path></svg>
+              Eigenschaft hinzufügen
+            </button>
+          </div>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:22px 2px 8px">Zu beachten</label>
+          <textarea data-field="note" value="{{ nd.note }}" onChange="{{ onNdNote }}" placeholder="Hinweise zu dieser Übung" style="width:100%;min-height:84px;padding:13px 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:15px;line-height:1.5;color:#1d2024;resize:none"></textarea>
+        </div>
+      </div>
+      </sc-if>
+
+      <!-- ===================== LOG WORKOUT ===================== -->
+      <sc-if value="{{ isLog }}" hint-placeholder-val="{{ true }}">
+      <div data-screen-label="Training eintragen" style="min-height:100%;background:#f7f6f3;padding-bottom:30px">
+        <div style="position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;padding:10px 18px;background:#f7f6f3;border-bottom:1px solid #eceae4">
+          <button onclick="{{ cancelLog }}" style="font-size:15px;color:#8a8f95;font-weight:600;background:none;border:none;cursor:pointer;padding:6px 4px">Abbrechen</button>
+          <span style="font-size:16px;font-weight:700">Training eintragen</span>
+          <button onclick="{{ saveLog }}" style="font-size:15px;font-weight:700;background:none;border:none;cursor:pointer;padding:6px 4px;color:{{ log.saveColor }}">Sichern</button>
+        </div>
+
+        <div style="padding:16px 22px 0">
+          <div style="font-size:18px;font-weight:800;letter-spacing:-0.3px">{{ log.exerciseName }}</div>
+          <sc-if value="{{ log.hasVariant }}" hint-placeholder-val="{{ true }}">
+          <div style="display:flex;gap:7px;margin-top:12px;padding:4px;background:#ecebe5;border-radius:13px">
+            <sc-for list="{{ log.variants }}" as="v" hint-placeholder-count="2">
+            <button data-variant="{{ v.name }}" onclick="{{ onLogVariant }}" style="flex:1;height:38px;border:none;border-radius:10px;cursor:pointer;font-size:14px;font-weight:700;letter-spacing:-0.2px;background:{{ v.bg }};color:{{ v.color }};box-shadow:{{ v.shadow }}">{{ v.name }}</button>
+            </sc-for>
+          </div>
+          </sc-if>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:20px 2px 8px">Datum</label>
+          <input type="date" value="{{ log.date }}" onChange="{{ onLogDate }}" style="width:100%;height:50px;padding:0 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font:600 15px/1 'JetBrains Mono',monospace;color:#1d2024" />
+
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:22px 2px 10px">
+            <label style="font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399">Sätze</label>
+            <span style="font-size:12px;color:#aab0b5;white-space:nowrap">Wdh × Gewicht</span>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:9px">
+            <sc-for list="{{ log.sets }}" as="s" hint-placeholder-count="3">
+            <div style="display:flex;align-items:center;gap:9px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:14px;padding:9px 10px 9px 13px">
+              <span style="flex:0 0 20px;text-align:center;font:700 13px/1 'JetBrains Mono',monospace;color:#aab0b5">{{ s.num }}</span>
+              <div style="flex:1 1 0;min-width:0;display:flex;align-items:center;background:#f5f4f0;border-radius:10px;height:44px;padding:0 11px">
+                <input value="{{ s.reps }}" data-idx="{{ s.i }}" data-field="reps" onChange="{{ onSetInput }}" inputmode="numeric" placeholder="12" style="flex:1 1 0;min-width:0;width:100%;height:44px;border:none;background:none;font:700 17px/1 'JetBrains Mono',monospace;color:#1d2024" />
+                <span style="font-size:12px;color:#9aa0a6;font-weight:600;flex:0 0 auto">Wdh</span>
+              </div>
+              <span style="font-size:14px;color:#b6b2a8;font-weight:700;flex:0 0 auto">×</span>
+              <div style="flex:1 1 0;min-width:0;display:flex;align-items:center;background:#f5f4f0;border-radius:10px;height:44px;padding:0 11px">
+                <input value="{{ s.weight }}" data-idx="{{ s.i }}" data-field="weight" onChange="{{ onSetInput }}" inputmode="decimal" placeholder="40" style="flex:1 1 0;min-width:0;width:100%;height:44px;border:none;background:none;font:700 17px/1 'JetBrains Mono',monospace;color:#1d2024" />
+                <span style="font-size:12px;color:#9aa0a6;font-weight:600;flex:0 0 auto">kg</span>
+              </div>
+              <button data-idx="{{ s.i }}" onclick="{{ onRemoveSet }}" style="flex:0 0 28px;height:28px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:{{ s.removeOpacity }}">
+                <svg width="17" height="17" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="9" r="8" fill="#f2f0eb"></circle><path d="M5.5 9h7" stroke="#b0473b" stroke-width="1.8" stroke-linecap="round"></path></svg>
+              </button>
+            </div>
+            </sc-for>
+          </div>
+
+          <button onclick="{{ addSet }}" style="display:flex;align-items:center;justify-content:center;gap:8px;width:100%;height:46px;margin-top:11px;border:1.5px dashed #d3d0c8;border-radius:13px;background:none;cursor:pointer;color:#6b7177;font-size:14.5px;font-weight:700">
+            <svg width="16" height="16" viewBox="0 0 18 18" fill="none"><path d="M9 4v10M4 9h10" stroke="#6b7177" stroke-width="1.9" stroke-linecap="round"></path></svg>
+            Satz hinzufügen
+          </button>
+
+          <label style="display:block;font-size:12px;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;color:#a7a399;margin:22px 2px 8px">Notiz</label>
+          <textarea data-field="lognote" value="{{ log.note }}" onChange="{{ onLogNote }}" placeholder="z.B. fühlte sich leicht an" style="width:100%;min-height:74px;padding:13px 15px;background:#fdfcf9;border:1px solid #e8e5dd;border-radius:13px;font-size:15px;line-height:1.5;color:#1d2024;resize:none"></textarea>
+        </div>
+      </div>
+      </sc-if>
+
+    </div>
+
+    <!-- BOTTOM NAV -->
+    <sc-if value="{{ isList }}" hint-placeholder-val="{{ true }}">
+    <div style="position:absolute;left:0;right:0;bottom:0;height:92px;display:flex;padding:9px 26px 30px;background:rgba(247,246,243,0.92);backdrop-filter:blur(12px);border-top:1px solid #eceae4">
+      <button onclick="{{ goExercises }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:{{ nav.exercises }}">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="7.5" height="7.5" rx="2" stroke="currentColor" stroke-width="1.9"></rect><rect x="13.5" y="3" width="7.5" height="7.5" rx="2" stroke="currentColor" stroke-width="1.9"></rect><rect x="3" y="13.5" width="7.5" height="7.5" rx="2" stroke="currentColor" stroke-width="1.9"></rect><rect x="13.5" y="13.5" width="7.5" height="7.5" rx="2" stroke="currentColor" stroke-width="1.9"></rect></svg>
+        <span style="font-size:10.5px;font-weight:700">Übungen</span>
+      </button>
+      <button onclick="{{ goHistory }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:{{ nav.history }}">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><rect x="3.5" y="13" width="4" height="7.5" rx="1.5" stroke="currentColor" stroke-width="1.9"></rect><rect x="10" y="8" width="4" height="12.5" rx="1.5" stroke="currentColor" stroke-width="1.9"></rect><rect x="16.5" y="4" width="4" height="16.5" rx="1.5" stroke="currentColor" stroke-width="1.9"></rect></svg>
+        <span style="font-size:10.5px;font-weight:700">Verlauf</span>
+      </button>
+      <button onclick="{{ goProfile }}" style="flex:1;display:flex;flex-direction:column;align-items:center;gap:5px;background:none;border:none;cursor:pointer;color:{{ nav.profile }}">
+        <svg width="23" height="23" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.6" stroke="currentColor" stroke-width="1.9"></circle><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path></svg>
+        <span style="font-size:10.5px;font-weight:700">Profil</span>
+      </button>
+    </div>
+    </sc-if>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:500,&quot;height&quot;:1040},&quot;accentColor&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Emerald&quot;,&quot;Slate-Blau&quot;,&quot;Terrakotta&quot;,&quot;Pflaume&quot;],&quot;default&quot;:&quot;Emerald&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;userName&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;A-Lee&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;trainingGoal&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Kraftaufbau &amp; Rücken stabilisieren&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    tab: 'exercises',
+    screen: 'list',
+    activeId: null,
+    activeVariant: null,
+    search: '',
+    editDraft: null,
+    logDraft: null,
+    data: this.loadData(),
+  };
+
+  // ---------- persistence ----------
+  loadData() {
+    try {
+      const raw = localStorage.getItem('gymtracker_v1');
+      if (raw) {
+        const d = JSON.parse(raw);
+        if (d && d.devices && !d.exercises) { d.exercises = d.devices; delete d.devices; }
+        if (d && Array.isArray(d.exercises)) {
+          const idIcon = { beinpresse:'legpress', legcurl:'legcurl', hyper:'hyper', backcurl:'backext', ruderzug:'row', latzug:'lat', seilzug:'cable', langhantel:'barbell' };
+          d.exercises.forEach(ex => {
+            if (ex.targetSets == null) ex.targetSets = 3;
+            if (ex.targetReps == null) ex.targetReps = 10;
+            if (ex.icon == null) ex.icon = idIcon[ex.id] || 'dumbbell';
+          });
+        }
+        return d;
+      }
+    } catch (e) {}
+    return { exercises: this.seed(), profile: { name: '', goal: '', warmup: '5 Min Velo, danach Mobilität für Schultern & Hüfte.' } };
+  }
+  persist() {
+    try { localStorage.setItem('gymtracker_v1', JSON.stringify(this.state.data)); } catch (e) {}
+  }
+
+  seed() {
+    return [
+      { id:'beinpresse', icon:'legpress', name:'Beinpresse', group:'Beine & Rumpf', variants:null,
+        settings:{ default:{ 'Schulter':'2','Rückenlehne':'4','Sitz':'3','Platte Fuss':'Mitte' } },
+        note:'Fersen flach lassen, Knie nicht ganz durchstrecken.',
+        history:[
+          {id:'b1',date:'2026-06-12',variant:'default',sets:[{reps:12,weight:80},{reps:10,weight:90},{reps:8,weight:95}],note:''},
+          {id:'b2',date:'2026-06-04',variant:'default',sets:[{reps:12,weight:75},{reps:10,weight:85},{reps:8,weight:90}],note:'Tempo bewusst langsam'},
+          {id:'b3',date:'2026-05-28',variant:'default',sets:[{reps:12,weight:70},{reps:12,weight:80},{reps:10,weight:85}],note:''},
+        ] },
+      { id:'legcurl', icon:'legcurl', name:'Leg curl / extension', group:'Beine & Rumpf', variants:['Leg curl','Leg extension'],
+        settings:{ 'Leg curl':{ 'Rückenlehne':'3','Sitz':'2','Obere Rolle':'—','Untere Rolle':'5','Winkel':'B' },
+                   'Leg extension':{ 'Rückenlehne':'3','Sitz':'2','Obere Rolle':'4','Untere Rolle':'2','Winkel':'A' } },
+        note:'Bewegung kontrolliert führen, nicht schwingen.',
+        history:[
+          {id:'l1',date:'2026-06-13',variant:'Leg curl',sets:[{reps:12,weight:35},{reps:12,weight:40},{reps:10,weight:42}],note:''},
+          {id:'l2',date:'2026-06-06',variant:'Leg curl',sets:[{reps:12,weight:32},{reps:12,weight:38},{reps:10,weight:40}],note:''},
+          {id:'l3',date:'2026-06-13',variant:'Leg extension',sets:[{reps:12,weight:30},{reps:10,weight:35}],note:''},
+        ] },
+      { id:'hyper', icon:'hyper', name:'Hyperextension', group:'Beine & Rumpf', variants:null,
+        settings:{ default:{ 'Untere Rolle':'4','Obere Rolle':'2','Winkel':'C' } },
+        note:'Rücken gerade halten, nicht überstrecken.',
+        history:[] },
+      { id:'backcurl', icon:'backext', name:'Back curl / extension', group:'Oberkörper', variants:['Back curl','Back extension'],
+        settings:{ 'Back curl':{ 'Lehnenhöhe':'4','Lehnenbreite':'3','Sitz':'2','Hebel Höhe':'5','Fuss':'2','Winkel':'B' },
+                   'Back extension':{ 'Lehnenhöhe':'4','Lehnenbreite':'3','Sitz':'2','Hebel Höhe':'3','Fuss':'2','Winkel':'A' } },
+        note:'',
+        history:[
+          {id:'bc1',date:'2026-06-10',variant:'Back curl',sets:[{reps:12,weight:25},{reps:12,weight:30}],note:''},
+        ] },
+      { id:'ruderzug', icon:'row', name:'Ruderzug / Brustpresse', group:'Oberkörper', variants:['Ruderzug','Brustpresse'],
+        settings:{ 'Ruderzug':{ 'Beugung':'4','Streckung':'6','Lehne':'5 – an Brust' },
+                   'Brustpresse':{ 'Beugung':'2','Streckung':'5','Lehne':'2 – am Rücken' } },
+        note:'Schulterblätter aktiv zusammenziehen.',
+        history:[
+          {id:'r1',date:'2026-06-14',variant:'Ruderzug',sets:[{reps:12,weight:40},{reps:10,weight:45},{reps:8,weight:50}],note:''},
+          {id:'r2',date:'2026-06-07',variant:'Ruderzug',sets:[{reps:12,weight:38},{reps:10,weight:42},{reps:8,weight:46}],note:''},
+          {id:'r3',date:'2026-06-11',variant:'Brustpresse',sets:[{reps:12,weight:30},{reps:10,weight:35}],note:''},
+        ] },
+      { id:'latzug', icon:'lat', name:'Latzug', group:'Oberkörper', variants:null,
+        settings:{ default:{ 'Sitzpolster':'4','Griff':'breit' } },
+        note:'',
+        history:[
+          {id:'lz1',date:'2026-06-14',variant:'default',sets:[{reps:12,weight:45},{reps:10,weight:50},{reps:8,weight:55}],note:''},
+        ] },
+      { id:'seilzug', icon:'cable', name:'Seilzug', group:'Oberkörper', variants:null,
+        settings:{ default:{} }, note:'', history:[] },
+      { id:'langhantel', icon:'barbell', name:'Langhantel Rack', group:'Oberkörper', variants:null,
+        settings:{ default:{} }, note:'Spotter / Sicherungsablage einstellen.', history:[] },
+    ];
+  }
+
+  // ---------- accent ----------
+  accentMap() {
+    return { 'Emerald':['#117a57','#e4f1ea'], 'Slate-Blau':['#2c5fb8','#e6ecf7'], 'Terrakotta':['#b35a33','#f6e7df'], 'Pflaume':['#6a4a9c','#ece5f4'] };
+  }
+
+  // ---------- exercise photo upload (downscaled data URL, stored per exercise) ----------
+  loadPhoto(file, cb) {
+    if (!file || !/^image\//.test(file.type)) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const max = 720;
+        const scale = Math.min(1, max / Math.max(img.width, img.height));
+        const w = Math.max(1, Math.round(img.width * scale)), h = Math.max(1, Math.round(img.height * scale));
+        const c = document.createElement('canvas'); c.width = w; c.height = h;
+        c.getContext('2d').drawImage(img, 0, 0, w, h);
+        try { cb(c.toDataURL('image/jpeg', 0.82)); } catch (e) { cb(reader.result); }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  }
+  onExercisePhoto = (e) => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    this.loadPhoto(f, (url) => { const d = this.getExercise(this.state.activeId); if (d) { d.photo = url; this.forceUpdate(); this.persist(); } });
+  };
+  removeExercisePhoto = () => { const d = this.getExercise(this.state.activeId); if (d) { d.photo = null; this.forceUpdate(); this.persist(); } };
+  onNdPhoto = (e) => {
+    const f = e.target.files && e.target.files[0]; e.target.value = '';
+    this.loadPhoto(f, (url) => this.setState({ newExerciseDraft: { ...this.state.newExerciseDraft, photo: url } }));
+  };
+  removeNdPhoto = () => this.setState({ newExerciseDraft: { ...this.state.newExerciseDraft, photo: null } });
+  photoThumb(photo, size) {
+    if (photo) return React.createElement('img', { src: photo, alt: '', style: { width:'100%', height:'100%', objectFit:'cover', display:'block' } });
+    const large = size >= 70;
+    const cam = React.createElement('svg', { width: large?22:21, height: large?22:21, viewBox:'0 0 24 24', fill:'none', stroke:'#a7a399', strokeWidth:1.7, strokeLinecap:'round', strokeLinejoin:'round' },
+      React.createElement('path', { key:'p', d:'M4 8h3l1.5-2h7L17 8h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z' }),
+      React.createElement('circle', { key:'c', cx:12, cy:13, r:3.2 }));
+    if (!large) return cam;
+    return React.createElement('div', { style:{ width:'100%', height:'100%', borderRadius:'17px', border:'1.5px dashed #cfccc3', background:'#f1f0eb', display:'flex', flexDirection:'column', alignItems:'center', justifyContent:'center', gap:'3px' } },
+      cam, React.createElement('span', { key:'t', style:{ fontSize:'10px', fontWeight:700, color:'#a7a399' } }, 'Foto'));
+  }
+
+  applyAccent() {
+    if (!this._root) return;
+    const m = this.accentMap()[this.props.accentColor || 'Emerald'] || this.accentMap()['Emerald'];
+    this._root.style.setProperty('--accent', m[0]);
+    this._root.style.setProperty('--accent-soft', m[1]);
+  }
+  componentDidMount() { this.applyAccent(); }
+  componentDidUpdate() { this.applyAccent(); }
+
+  // ---------- helpers ----------
+  getExercise(id) { return this.state.data.exercises.find(d => d.id === id); }
+  keyFor(d) { return d && d.variants ? this.state.activeVariant : 'default'; }
+  topW(sets) { return sets.length ? Math.max(...sets.map(s => Number(s.weight) || 0)) : 0; }
+  repsText(sets) {
+    const n = sets.length;
+    const reps = sets.map(s => s.reps).join('·');
+    return (n === 1 ? '1 Satz' : n + ' Sätze') + ' · ' + reps + ' Wdh';
+  }
+  todayISO() {
+    const d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  parseD(iso) { return new Date(iso + 'T00:00:00'); }
+  fmtRel(iso) {
+    const t = new Date(); t.setHours(0,0,0,0);
+    const diff = Math.round((t - this.parseD(iso)) / 86400000);
+    if (diff <= 0) return 'Heute';
+    if (diff === 1) return 'Gestern';
+    if (diff < 7) return 'vor ' + diff + ' Tagen';
+    if (diff < 14) return 'vor 1 Woche';
+    return 'vor ' + Math.floor(diff/7) + ' Wochen';
+  }
+  fmtDate(iso) { return this.parseD(iso).toLocaleDateString('de-CH', { day:'numeric', month:'long' }); }
+  fmtDay(iso) { return String(this.parseD(iso).getDate()); }
+  fmtMon(iso) { return this.parseD(iso).toLocaleDateString('de-CH', { month:'short' }).replace('.',''); }
+  fmtBarLabel(iso) { const d = this.parseD(iso); return d.getDate() + '.' + (d.getMonth()+1); }
+
+  // ---------- view models ----------
+  vmGroups() {
+    const q = this.state.search.trim().toLowerCase();
+    const base = ['Beine & Rumpf', 'Oberkörper'];
+    const order = base.slice();
+    this.state.data.exercises.forEach(d => { if (d.group && !order.includes(d.group)) order.push(d.group); });
+    const res = [];
+    for (const g of order) {
+      const items = this.state.data.exercises
+        .filter(d => d.group === g && (!q || d.name.toLowerCase().includes(q)))
+        .map(d => {
+          const hist = (d.history || []).slice().sort((a,b) => a.date < b.date ? 1 : -1);
+          const last = hist[0] || null;
+          const today = this.todayISO();
+          const doneToday = (d.history || []).some(e => e.date === today);
+          return {
+            id: d.id, name: d.name,
+            doneToday, notDoneToday: !doneToday,
+            cardBorder: doneToday ? 'var(--accent,#117a57)' : '#e8e5dd',
+            lastLineColor: doneToday ? 'var(--accent,#117a57)' : '#9aa0a6',
+            lastLineWeight: doneToday ? '700' : '500',
+            photo: d.photo || null, hasPhoto: !!d.photo, noPhoto: !d.photo,
+            photoEl: this.photoThumb(d.photo || null, 54),
+            hasVariants: !!d.variants, noVariants: !d.variants,
+            variantCount: d.variants ? d.variants.length : 0,
+            hasLast: !!last,
+            lastText: last ? this.fmtRel(last.date) : 'Noch nicht trainiert',
+            lastTop: last ? this.topW(last.sets) : 0,
+            lastLine: doneToday ? 'Heute erledigt' : (last ? ('Zuletzt ' + this.topW(last.sets) + ' kg · ' + this.fmtRel(last.date)) : 'Noch nicht trainiert'),
+          };
+        });
+      if (items.length) res.push({ name: g, items });
+    }
+    return res;
+  }
+
+  vmDev() {
+    const d = this.getExercise(this.state.activeId);
+    if (!d) return null;
+    const key = this.keyFor(d);
+    const settings = (d.settings && d.settings[key]) || {};
+    const paramRows = Object.keys(settings).map(name => {
+      const v = settings[name];
+      const filled = !!(v !== undefined && v !== null && String(v).trim() && String(v).trim() !== '—');
+      return { name, display: (v === undefined || v === null || String(v).trim() === '') ? '—' : String(v), valColor: filled ? '#1d2024' : '#bdc0bf' };
+    });
+    const hist = (d.history || []).filter(e => d.variants ? e.variant === key : true);
+    const newest = hist.slice().sort((a,b) => a.date < b.date ? 1 : -1);
+    const history = newest.map(e => ({
+      id: e.id, date: this.fmtDate(e.date), rel: this.fmtRel(e.date),
+      note: e.note || '', hasNote: !!(e.note && e.note.trim()),
+      sets: e.sets.map(s => ({ label: s.reps + ' × ' + s.weight + ' kg' })),
+    }));
+    const chron = hist.slice().sort((a,b) => a.date < b.date ? -1 : 1).slice(-6);
+    const maxW = Math.max(1, ...chron.map(e => this.topW(e.sets)));
+    const accent = (this.accentMap()[this.props.accentColor || 'Emerald'] || this.accentMap()['Emerald'])[0];
+    const bars = chron.map((e,i) => {
+      const w = this.topW(e.sets);
+      return { h: Math.round(26 + (w / maxW) * 74), weight: w, label: this.fmtBarLabel(e.date),
+        fill: i === chron.length - 1 ? 'var(--accent,#117a57)' : '#d7e7df' };
+    });
+    const best = hist.length ? Math.max(...hist.map(e => this.topW(e.sets))) : 0;
+    const variants = d.variants ? d.variants.map(v => {
+      const active = v === key;
+      return { name: v, bg: active ? '#ffffff' : 'transparent', color: active ? '#1d2024' : '#85807a',
+        shadow: active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' };
+    }) : [];
+    return {
+      group: d.group, name: d.name,
+      photo: d.photo || null, hasPhoto: !!d.photo, noPhoto: !d.photo,
+      photoEl: this.photoThumb(d.photo || null, 76),
+      hasVariants: !!d.variants, variants,
+      paramRows, hasParams: paramRows.length > 0, noParams: paramRows.length === 0,
+      note: d.note || '', hasNote: !!(d.note && d.note.trim()),
+      history, hasHistory: history.length > 0, noHistory: history.length === 0,
+      bars, hasBars: bars.length > 1,
+      best,
+      targetText: (d.targetSets || 3) + ' Sätze × ' + (d.targetReps || 10) + ' Wdh',
+    };
+  }
+
+  vmRecent() {
+    const all = [];
+    for (const d of this.state.data.exercises)
+      for (const e of (d.history || []))
+        all.push({ exercise: d.name, hasVariants: !!d.variants, e });
+    all.sort((a,b) => a.e.date < b.e.date ? 1 : -1);
+    return all.slice(0, 15).map((x,i) => ({
+      id: x.e.id + '_' + i, exercise: x.exercise,
+      day: this.fmtDay(x.e.date), mon: this.fmtMon(x.e.date),
+      setText: this.repsText(x.e.sets), topWeight: this.topW(x.e.sets),
+    }));
+  }
+
+  vmProgress() {
+    const exs = this.state.data.exercises;
+    const entries = [];
+    exs.forEach(d => (d.history || []).forEach(e => entries.push({ d, e })));
+    const noData = entries.length === 0;
+
+    const daySet = new Set(entries.map(x => x.e.date));
+    const total = daySet.size;
+
+    const weekStart = (iso) => { const d = this.parseD(iso); const off = (d.getDay()+6)%7; d.setDate(d.getDate()-off); d.setHours(0,0,0,0); return d; };
+    const isoOf = (dt) => dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+    const today = new Date(); today.setHours(0,0,0,0);
+    const curWeek = weekStart(isoOf(today));
+
+    const daysByWeek = {};
+    daySet.forEach(iso => { const k = isoOf(weekStart(iso)); (daysByWeek[k] = daysByWeek[k] || new Set()).add(iso); });
+    const weekCount = (dt) => { const k = isoOf(dt); return daysByWeek[k] ? daysByWeek[k].size : 0; };
+
+    const weekGoal = 2;
+    const thisWeek = weekCount(curWeek);
+
+    const tmp = []; let maxC = weekGoal;
+    for (let i = 7; i >= 0; i--) {
+      const dt = new Date(curWeek); dt.setDate(dt.getDate() - i*7);
+      const c = weekCount(dt); maxC = Math.max(maxC, c);
+      tmp.push({ dt, c, isCur: i === 0 });
+    }
+    const weeks = tmp.map(t => {
+      const reached = t.c >= weekGoal;
+      return {
+        count: t.c,
+        h: t.c === 0 ? 4 : Math.round(16 + (t.c / maxC) * 84),
+        fill: t.c === 0 ? '#ececea' : (reached ? 'var(--accent,#117a57)' : '#bfe0d0'),
+        label: t.dt.getDate() + '.' + (t.dt.getMonth()+1),
+        countColor: t.c === 0 ? '#c4c8cb' : '#6b7177',
+        labelColor: t.isCur ? 'var(--accent,#117a57)' : '#aab0b5',
+      };
+    });
+
+    const activeWeeks = new Set(Object.keys(daysByWeek).filter(k => daysByWeek[k].size > 0));
+    let streak = 0, probe = new Date(curWeek);
+    if (!activeWeeks.has(isoOf(probe))) probe.setDate(probe.getDate() - 7);
+    while (activeWeeks.has(isoOf(probe))) { streak++; probe.setDate(probe.getDate() - 7); }
+
+    const progEx = exs.map(d => {
+      const hist = (d.history || []).slice().sort((a,b) => a.date < b.date ? -1 : 1);
+      if (!hist.length) return null;
+      const firstTop = this.topW(hist[0].sets);
+      const lastTop = this.topW(hist[hist.length-1].sets);
+      const best = Math.max(...hist.map(e => this.topW(e.sets)));
+      const delta = lastTop - firstTop;
+      let deltaText, deltaColor, deltaBg;
+      if (hist.length === 1) { deltaText = 'Neu'; deltaColor = '#8a8f95'; deltaBg = '#f0eee9'; }
+      else if (delta > 0) { deltaText = '↑ +' + delta + ' kg'; deltaColor = '#117a57'; deltaBg = '#e4f1ea'; }
+      else if (delta < 0) { deltaText = '↓ ' + Math.abs(delta) + ' kg'; deltaColor = '#b0473b'; deltaBg = '#f7e9e6'; }
+      else { deltaText = 'gehalten'; deltaColor = '#8a8f95'; deltaBg = '#f0eee9'; }
+      return { name: d.name, best, delta, sessions: hist.length,
+        sub: hist.length + (hist.length === 1 ? ' Training' : ' Trainings'),
+        deltaText, deltaColor, deltaBg };
+    }).filter(Boolean);
+    progEx.sort((a,b) => (b.delta - a.delta) || (b.sessions - a.sessions));
+
+    return { hasData: !noData, noData, thisWeek, streak, total, weekGoal, weeks, exercises: progEx.slice(0, 6) };
+  }
+
+  // ---------- nav handlers ----------
+  goExercises = () => this.setState({ tab:'exercises', screen:'list' });
+  goHistory = () => this.setState({ tab:'history', screen:'list' });
+  goProfile = () => this.setState({ tab:'profile', screen:'list' });
+  backToList = () => this.setState({ screen:'list' });
+  onSearch = (e) => this.setState({ search: e.target.value });
+
+  onOpenExercise = (e) => {
+    const id = e.currentTarget.dataset.id;
+    const d = this.getExercise(id);
+    this.setState({ activeId: id, activeVariant: d && d.variants ? d.variants[0] : null, screen:'exercise' });
+  };
+  onSetVariant = (e) => this.setState({ activeVariant: e.currentTarget.dataset.variant });
+
+  onProfileInput = (e) => {
+    const f = e.target.dataset.field;
+    const profile = { ...this.state.data.profile, [f]: e.target.value };
+    this.setState({ data: { ...this.state.data, profile } }, () => this.persist());
+  };
+
+  // ---------- edit settings ----------
+  openEdit = () => {
+    const d = this.getExercise(this.state.activeId);
+    const key = this.keyFor(d);
+    const settings = (d.settings && d.settings[key]) || {};
+    const rows = Object.keys(settings).map(n => ({ name: n, value: String(settings[n] == null ? '' : settings[n]) }));
+    this.setState({ screen:'edit', editDraft: { rows, note: d.note || '',
+      targetSets: String(d.targetSets || 3), targetReps: String(d.targetReps || 10) } });
+  };
+  cancelEdit = () => this.setState({ screen:'exercise', editDraft:null });
+  onEditTarget = (e) => {
+    const f = e.target.dataset.field;
+    this.setState({ editDraft: { ...this.state.editDraft, [f]: e.target.value.replace(/[^0-9]/g,'') } });
+  };
+  onEditInput = (e) => {
+    const i = +e.target.dataset.idx, kind = e.target.dataset.kind;
+    const rows = this.state.editDraft.rows.slice();
+    rows[i] = { ...rows[i], [kind]: e.target.value };
+    this.setState({ editDraft: { ...this.state.editDraft, rows } });
+  };
+  onRemoveParam = (e) => {
+    const i = +e.currentTarget.dataset.idx;
+    const rows = this.state.editDraft.rows.slice(); rows.splice(i,1);
+    this.setState({ editDraft: { ...this.state.editDraft, rows } });
+  };
+  addParam = () => {
+    const rows = [...this.state.editDraft.rows, { name:'', value:'' }];
+    this.setState({ editDraft: { ...this.state.editDraft, rows } });
+  };
+  onEditNote = (e) => this.setState({ editDraft: { ...this.state.editDraft, note: e.target.value } });
+  saveEdit = () => {
+    const d = this.getExercise(this.state.activeId);
+    const key = this.keyFor(d);
+    const obj = {};
+    this.state.editDraft.rows.forEach(r => { const n = (r.name||'').trim(); if (n) obj[n] = r.value; });
+    d.settings = d.settings || {};
+    d.settings[key] = obj;
+    d.note = this.state.editDraft.note;
+    d.targetSets = Math.max(1, parseInt(this.state.editDraft.targetSets) || 3);
+    d.targetReps = Math.max(1, parseInt(this.state.editDraft.targetReps) || 10);
+    this.setState({ screen:'exercise', editDraft:null }, () => this.persist());
+  };
+
+  // ---------- new exercise ----------
+  groupList() {
+    const base = ['Beine & Rumpf', 'Oberkörper'];
+    const order = base.slice();
+    this.state.data.exercises.forEach(d => { if (d.group && !order.includes(d.group)) order.push(d.group); });
+    return order;
+  }
+  slugify(s) {
+    return (s || '').toLowerCase()
+      .replace(/[äàá]/g,'a').replace(/[öòó]/g,'o').replace(/[üùú]/g,'u').replace(/ß/g,'ss')
+      .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'') || 'uebung';
+  }
+  openNewExercise = () => {
+    this.setState({ screen:'newexercise', newExerciseDraft: {
+      name:'', group: this.groupList()[0] || '', customGroup:'',
+      photo:null,
+      useVariants:false, variantRows:[{name:''},{name:''}],
+      targetSets:'3', targetReps:'10',
+      paramRows:[{name:'',value:''}], note:'',
+    }});
+  };
+  cancelNewExercise = () => this.setState({ screen:'list', newExerciseDraft:null });
+  onNdTarget = (e) => {
+    const f = e.target.dataset.field;
+    this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, [f]: e.target.value.replace(/[^0-9]/g,'') } });
+  };
+  onNdName = (e) => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, name:e.target.value } });
+  onNdGroup = (e) => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, group:e.currentTarget.dataset.group, customGroup:'' } });
+  onNdCustomGroup = (e) => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, customGroup:e.target.value } });
+  toggleNdVariants = () => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, useVariants:!this.state.newExerciseDraft.useVariants } });
+  onNdVariantInput = (e) => {
+    const i = +e.target.dataset.idx;
+    const variantRows = this.state.newExerciseDraft.variantRows.slice();
+    variantRows[i] = { name:e.target.value };
+    this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, variantRows } });
+  };
+  onNdAddVariant = () => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, variantRows:[...this.state.newExerciseDraft.variantRows, {name:''}] } });
+  onNdRemoveVariant = (e) => {
+    const i = +e.currentTarget.dataset.idx;
+    if (this.state.newExerciseDraft.variantRows.length <= 1) return;
+    const variantRows = this.state.newExerciseDraft.variantRows.slice(); variantRows.splice(i,1);
+    this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, variantRows } });
+  };
+  onNdParamInput = (e) => {
+    const i = +e.target.dataset.idx, kind = e.target.dataset.kind;
+    const paramRows = this.state.newExerciseDraft.paramRows.slice();
+    paramRows[i] = { ...paramRows[i], [kind]:e.target.value };
+    this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, paramRows } });
+  };
+  onNdAddParam = () => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, paramRows:[...this.state.newExerciseDraft.paramRows, {name:'',value:''}] } });
+  onNdRemoveParam = (e) => {
+    const i = +e.currentTarget.dataset.idx;
+    const paramRows = this.state.newExerciseDraft.paramRows.slice(); paramRows.splice(i,1);
+    this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, paramRows: paramRows.length ? paramRows : [{name:'',value:''}] } });
+  };
+  onNdNote = (e) => this.setState({ newExerciseDraft:{ ...this.state.newExerciseDraft, note:e.target.value } });
+  saveNewExercise = () => {
+    const nd = this.state.newExerciseDraft;
+    const name = (nd.name || '').trim();
+    if (!name) return;
+    const group = (nd.customGroup || '').trim() || nd.group || 'Weitere';
+    const variants = nd.useVariants
+      ? nd.variantRows.map(v => (v.name || '').trim()).filter(Boolean)
+      : [];
+    const paramObj = {};
+    nd.paramRows.forEach(r => { const n = (r.name || '').trim(); if (n) paramObj[n] = r.value || ''; });
+    const settings = {};
+    if (variants.length) variants.forEach(v => { settings[v] = { ...paramObj }; });
+    else settings.default = paramObj;
+    let id = this.slugify(name);
+    if (this.getExercise(id)) id = id + '-' + Date.now().toString(36).slice(-4);
+    const exercise = {
+      id, name, group,
+      photo: nd.photo || null,
+      variants: variants.length ? variants : null,
+      targetSets: Math.max(1, parseInt(nd.targetSets) || 3),
+      targetReps: Math.max(1, parseInt(nd.targetReps) || 10),
+      settings, note: nd.note || '', history: [],
+    };
+    this.state.data.exercises.push(exercise);
+    this.setState({
+      data: this.state.data,
+      newExerciseDraft: null,
+      activeId: id,
+      activeVariant: variants.length ? variants[0] : null,
+      tab: 'exercises',
+      screen: 'exercise',
+    }, () => this.persist());
+  };
+
+  // ---------- log workout ----------
+  buildLogDraft(d, key) {
+    const hist = (d.history || []).filter(e => d.variants ? e.variant === key : true).sort((a,b) => a.date < b.date ? 1 : -1);
+    const last = hist[0];
+    const ts = Math.max(1, d.targetSets || 3), tr = d.targetReps || 10;
+    const sets = last
+      ? last.sets.map(s => ({ reps: String(s.reps || tr), weight: String(s.weight) }))
+      : Array.from({ length: ts }, () => ({ reps: String(tr), weight: '' }));
+    return { date: this.todayISO(), sets, note: '' };
+  }
+  openLog = () => {
+    const d = this.getExercise(this.state.activeId);
+    const key = this.keyFor(d);
+    this.setState({ screen:'log', logReturn:'exercise', logDraft: this.buildLogDraft(d, key) });
+  };
+  onQuickLog = (e) => {
+    const id = e.currentTarget.dataset.id;
+    const d = this.getExercise(id);
+    const key = d && d.variants ? d.variants[0] : 'default';
+    this.setState({ activeId: id, activeVariant: d && d.variants ? d.variants[0] : null,
+      screen:'log', logReturn:'list', logDraft: this.buildLogDraft(d, key) });
+  };
+  onLogVariant = (e) => {
+    const v = e.currentTarget.dataset.variant;
+    const d = this.getExercise(this.state.activeId);
+    const draft = this.buildLogDraft(d, v);
+    draft.date = this.state.logDraft.date;
+    draft.note = this.state.logDraft.note;
+    this.setState({ activeVariant: v, logDraft: draft });
+  };
+  cancelLog = () => this.setState({ screen: this.state.logReturn === 'list' ? 'list' : 'exercise', logDraft:null });
+  onLogDate = (e) => this.setState({ logDraft: { ...this.state.logDraft, date: e.target.value } });
+  onSetInput = (e) => {
+    const i = +e.target.dataset.idx, f = e.target.dataset.field;
+    const sets = this.state.logDraft.sets.slice();
+    sets[i] = { ...sets[i], [f]: e.target.value };
+    this.setState({ logDraft: { ...this.state.logDraft, sets } });
+  };
+  addSet = () => {
+    const sets = this.state.logDraft.sets.slice();
+    const last = sets[sets.length - 1];
+    sets.push({ reps:'', weight: last ? last.weight : '' });
+    this.setState({ logDraft: { ...this.state.logDraft, sets } });
+  };
+  onRemoveSet = (e) => {
+    const i = +e.currentTarget.dataset.idx;
+    if (this.state.logDraft.sets.length <= 1) return;
+    const sets = this.state.logDraft.sets.slice(); sets.splice(i,1);
+    this.setState({ logDraft: { ...this.state.logDraft, sets } });
+  };
+  onLogNote = (e) => this.setState({ logDraft: { ...this.state.logDraft, note: e.target.value } });
+  saveLog = () => {
+    const ld = this.state.logDraft;
+    const sets = ld.sets
+      .map(s => ({ reps: parseInt(s.reps) || 0, weight: parseFloat(String(s.weight).replace(',','.')) || 0 }))
+      .filter(s => s.reps > 0);
+    if (!sets.length) return;
+    const d = this.getExercise(this.state.activeId);
+    const key = this.keyFor(d);
+    d.history = d.history || [];
+    d.history.push({ id:'e'+Date.now(), date: ld.date, variant: key, sets, note: ld.note });
+    this.setState({ screen: this.state.logReturn === 'list' ? 'list' : 'exercise', logDraft:null }, () => this.persist());
+  };
+
+  renderVals() {
+    const screen = this.state.screen;
+    const tab = this.state.tab;
+    const muted = '#9aa0a6', acc = 'var(--accent,#117a57)';
+    const profileRaw = this.state.data.profile;
+    const name = profileRaw.name || this.props.userName || '';
+    const goal = profileRaw.goal || this.props.trainingGoal || 'Kraftaufbau & Rücken stabilisieren';
+    const totalSessions = this.state.data.exercises.reduce((n,d) => n + (d.history ? d.history.length : 0), 0);
+
+    const dev = this.vmDev();
+    const recent = this.vmRecent();
+
+    // log vm
+    let log = { exerciseName:'', hasVariant:false, variantLabel:'', variants:[], date:'', sets:[], note:'', saveColor: muted };
+    if (this.state.logDraft) {
+      const d = this.getExercise(this.state.activeId);
+      const key = this.keyFor(d);
+      const ld = this.state.logDraft;
+      const canSave = ld.sets.some(s => parseInt(s.reps) > 0);
+      log = {
+        exerciseName: d ? d.name : '',
+        hasVariant: !!(d && d.variants),
+        variantLabel: key,
+        variants: (d && d.variants) ? d.variants.map(v => {
+          const active = v === key;
+          return { name: v, bg: active ? '#ffffff' : 'transparent', color: active ? '#1d2024' : '#85807a',
+            shadow: active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none' };
+        }) : [],
+        date: ld.date, note: ld.note,
+        saveColor: canSave ? acc : '#c9c6bd',
+        sets: ld.sets.map((s,i) => ({ i, num: i+1, reps: s.reps, weight: s.weight,
+          removeOpacity: ld.sets.length > 1 ? '1' : '0.25' })),
+      };
+    }
+
+    // edit vm
+    let edit = { context:'', rows:[], note:'', targetSets:'3', targetReps:'10' };
+    if (this.state.editDraft) {
+      const d = this.getExercise(this.state.activeId);
+      const key = this.keyFor(d);
+      edit = {
+        context: d ? (d.name + (d.variants ? ' · ' + key : '')) : '',
+        note: this.state.editDraft.note,
+        targetSets: this.state.editDraft.targetSets,
+        targetReps: this.state.editDraft.targetReps,
+        rows: this.state.editDraft.rows.map((r,i) => ({ i, name: r.name, value: r.value })),
+      };
+    }
+
+    // new exercise vm
+    let nd = { name:'', customGroup:'', groupChips:[], useVariants:false, toggleBg:'#d2cfc7', toggleLeft:'3px',
+               variantRows:[], paramRows:[], note:'', saveColor:'#c9c6bd', paramHint:'', valuePlaceholder:'Wert',
+               targetSets:'3', targetReps:'10' };
+    if (this.state.newExerciseDraft) {
+      const D = this.state.newExerciseDraft;
+      const sel = (D.customGroup || '').trim() ? null : D.group;
+      nd = {
+        name: D.name, customGroup: D.customGroup, note: D.note,
+        targetSets: D.targetSets, targetReps: D.targetReps,
+        photo: D.photo || null, hasPhoto: !!D.photo,
+        photoEl: this.photoThumb(D.photo || null, 76),
+        useVariants: D.useVariants,
+        toggleBg: D.useVariants ? acc : '#d2cfc7',
+        toggleLeft: D.useVariants ? '23px' : '3px',
+        groupChips: this.groupList().map(g => {
+          const on = g === sel;
+          return { name: g, bg: on ? 'var(--accent-soft,#e4f1ea)' : '#fff',
+            border: on ? 'var(--accent,#117a57)' : '#e6e4df', color: on ? 'var(--accent,#117a57)' : '#55595e' };
+        }),
+        variantRows: D.variantRows.map((v,i) => ({ i, num: i+1, name: v.name,
+          removeOpacity: D.variantRows.length > 1 ? '1' : '0.25' })),
+        paramRows: D.paramRows.map((r,i) => ({ i, name: r.name, value: r.value })),
+        paramHint: D.useVariants
+          ? 'Werte gelten als Startwert für alle Varianten — pro Variante später anpassbar.'
+          : 'Trag die Werte ein, die du dir merkst.',
+        valuePlaceholder: 'Wert',
+        saveColor: (D.name || '').trim() ? acc : '#c9c6bd',
+      };
+    }
+
+    return {
+      rootRef: (el) => { this._root = el; if (el) this.applyAccent(); },
+      isList: screen === 'list',
+      isExercise: screen === 'exercise',
+      isEdit: screen === 'edit',
+      isLog: screen === 'log',
+      isNewExercise: screen === 'newexercise',
+      isExercises: screen === 'list' && tab === 'exercises',
+      isHistory: screen === 'list' && tab === 'history',
+      isProfile: screen === 'list' && tab === 'profile',
+      nav: {
+        exercises: tab === 'exercises' ? acc : muted,
+        history: tab === 'history' ? acc : muted,
+        profile: tab === 'profile' ? acc : muted,
+      },
+      profile: {
+        name, goal, warmup: profileRaw.warmup || '',
+        greeting: name ? ('Hoi, ' + name) : 'Hoi!',
+        displayGoal: goal,
+      },
+      stats: { exercises: this.state.data.exercises.length, sessions: totalSessions },
+      groups: this.vmGroups(),
+      search: this.state.search,
+      recent, hasRecent: recent.length > 0, noRecent: recent.length === 0,
+      prog: this.vmProgress(),
+      dev: dev || {},
+      log, edit, nd,
+      // handlers
+      goExercises: this.goExercises, goHistory: this.goHistory, goProfile: this.goProfile,
+      backToList: this.backToList, onSearch: this.onSearch,
+      onOpenExercise: this.onOpenExercise, onSetVariant: this.onSetVariant, onQuickLog: this.onQuickLog,
+      onProfileInput: this.onProfileInput,
+      openEdit: this.openEdit, cancelEdit: this.cancelEdit, onEditInput: this.onEditInput,
+      onRemoveParam: this.onRemoveParam, addParam: this.addParam, onEditNote: this.onEditNote, onEditTarget: this.onEditTarget, saveEdit: this.saveEdit,
+      openLog: this.openLog, cancelLog: this.cancelLog, onLogDate: this.onLogDate, onLogVariant: this.onLogVariant,
+      onSetInput: this.onSetInput, addSet: this.addSet, onRemoveSet: this.onRemoveSet,
+      onLogNote: this.onLogNote, saveLog: this.saveLog,
+      openNewExercise: this.openNewExercise, cancelNewExercise: this.cancelNewExercise,
+      onNdName: this.onNdName, onNdGroup: this.onNdGroup, onNdCustomGroup: this.onNdCustomGroup,
+      toggleNdVariants: this.toggleNdVariants, onNdVariantInput: this.onNdVariantInput,
+      onNdAddVariant: this.onNdAddVariant, onNdRemoveVariant: this.onNdRemoveVariant,
+      onNdParamInput: this.onNdParamInput, onNdAddParam: this.onNdAddParam, onNdRemoveParam: this.onNdRemoveParam,
+      onNdNote: this.onNdNote, onNdTarget: this.onNdTarget, onNdPhoto: this.onNdPhoto, removeNdPhoto: this.removeNdPhoto, saveNewExercise: this.saveNewExercise,
+      onExercisePhoto: this.onExercisePhoto, removeExercisePhoto: this.removeExercisePhoto,
+    };
+  }
+}
+</script>
+</body>
+</html>
