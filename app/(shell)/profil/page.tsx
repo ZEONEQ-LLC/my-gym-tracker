@@ -1,5 +1,7 @@
 "use client";
 
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { TextArea, TextField } from "@/components/ui/fields";
 import { CheckIcon } from "@/components/ui/icons";
 import { Card, SectionLabel } from "@/components/ui/primitives";
@@ -8,11 +10,23 @@ import { useGymData, useReplaceAll, useUpdateProfile } from "@/lib/data/hooks";
 import { seedExercises } from "@/lib/domain/seed";
 import { AccentName, emptyData } from "@/lib/domain/types";
 import { ACCENTS, ACCENT_NAMES } from "@/lib/theme/accents";
+import { createClient } from "@/lib/supabase/client";
+import { useAuth } from "@/lib/supabase/use-user";
 
 export default function ProfilPage() {
+  const router = useRouter();
+  const { user } = useAuth();
   const { data, isPending } = useGymData();
   const updateProfile = useUpdateProfile();
   const replaceAll = useReplaceAll();
+  const [signingOut, setSigningOut] = useState(false);
+
+  async function signOut() {
+    setSigningOut(true);
+    await createClient().auth.signOut();
+    router.replace("/login");
+    router.refresh();
+  }
 
   if (isPending || !data) {
     return (
@@ -86,6 +100,24 @@ export default function ProfilPage() {
               style={{ color: "#b0473b", background: "#f7e9e6" }}
             >
               Alle Übungen löschen
+            </button>
+          </Card>
+        </Field>
+
+        <Field label="Konto">
+          <Card className="flex flex-col gap-3 p-4">
+            {user?.email ? (
+              <div className="text-[13.5px] text-ink-2">
+                Angemeldet als <span className="font-semibold text-ink">{user.email}</span>
+              </div>
+            ) : null}
+            <button
+              type="button"
+              onClick={signOut}
+              disabled={signingOut}
+              className="h-[44px] rounded-[12px] border border-line text-[14px] font-bold text-ink"
+            >
+              {signingOut ? "Wird abgemeldet …" : "Abmelden"}
             </button>
           </Card>
         </Field>

@@ -3,6 +3,7 @@ import { Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { QueryProvider } from "@/lib/data/query-provider";
 import { AccentSync } from "@/components/layout/accent-sync";
+import { AuthProvider } from "@/lib/supabase/use-user";
 
 const hanken = Hanken_Grotesk({
   subsets: ["latin"],
@@ -35,10 +36,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="de" className={`${hanken.variable} ${jetbrains.variable}`}>
       <body>
-        <QueryProvider>
-          <AccentSync />
-          {children}
-        </QueryProvider>
+        <AuthProvider>
+          <QueryProvider>
+            <AccentSync />
+            {children}
+          </QueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );
