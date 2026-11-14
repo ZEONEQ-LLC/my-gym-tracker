@@ -2,10 +2,14 @@
 
 import type { BarVM, WeekBarVM } from "@/lib/domain/selectors";
 
+// Both charts size to their content (no fixed height): bars are at most 100px
+// (see vmDetail / vmProgress) plus the value and date labels, which scale with
+// --text-scale. A fixed box pushed the top labels out of the card.
+
 /** Progress mini bar chart on the exercise detail (last 6 sessions). */
 export function ProgressBars({ bars }: { bars: BarVM[] }) {
   return (
-    <div className="flex h-[112px] items-end justify-between gap-2">
+    <div className="flex items-end justify-between gap-2">
       {bars.map((b, i) => (
         <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
           <span className="font-mono fs-11 font-semibold text-ink-2">{b.weight}</span>
@@ -23,7 +27,7 @@ export function ProgressBars({ bars }: { bars: BarVM[] }) {
 /** Weekly consistency chart on the history tab (last 8 weeks). */
 export function WeekBars({ weeks }: { weeks: WeekBarVM[] }) {
   return (
-    <div className="flex h-[120px] items-end justify-between gap-1.5">
+    <div className="flex items-end justify-between gap-1.5">
       {weeks.map((w, i) => (
         <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
           <span
