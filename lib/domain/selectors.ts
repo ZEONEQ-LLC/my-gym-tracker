@@ -3,7 +3,7 @@
 // objects ready for rendering. Accent fills use the CSS variable `--accent` so
 // the active theme applies automatically.
 
-import { fmtBarLabel, fmtDate, fmtDay, fmtMon, fmtRel, isoOf, parseD, todayISO, weekStart } from "./date";
+import { fmtBarLabel, fmtDate, fmtDateLong, fmtDay, fmtMon, fmtRel, isoOf, parseD, todayISO, weekStart } from "./date";
 import { Exercise, GymData, HistoryEntry, SetEntry } from "./types";
 
 const ACCENT = "var(--accent, #117a57)";
@@ -176,10 +176,47 @@ export function vmDetail(ex: Exercise, key: string): DetailVM {
   };
 }
 
+// ---------- single logged training (Trainingsdetail) ----------
+
+export type EntryVM = {
+  exerciseName: string;
+  /** Variant name, only when the exercise has variants. */
+  variant: string | null;
+  dateLong: string;
+  rel: string;
+  sets: { n: number; reps: number; weight: number }[];
+  setCount: number;
+  topWeight: number;
+  /** Σ reps × weight, formatted de-CH (e.g. "3’150"). */
+  volumeText: string;
+  note: string;
+  hasNote: boolean;
+};
+
+export function vmEntry(ex: Exercise, entryId: string): EntryVM | null {
+  const e = (ex.history || []).find((h) => h.id === entryId);
+  if (!e) return null;
+  const volume = e.sets.reduce((sum, s) => sum + (Number(s.reps) || 0) * (Number(s.weight) || 0), 0);
+  return {
+    exerciseName: ex.name,
+    variant: ex.variants ? e.variant : null,
+    dateLong: fmtDateLong(e.date),
+    rel: fmtRel(e.date),
+    sets: e.sets.map((s, i) => ({ n: i + 1, reps: s.reps, weight: s.weight })),
+    setCount: e.sets.length,
+    topWeight: topW(e.sets),
+    volumeText: Math.round(volume).toLocaleString("de-CH"),
+    note: e.note || "",
+    hasNote: !!(e.note && e.note.trim()),
+  };
+}
+
 // ---------- recent / all trainings (Verlauf) ----------
 
 export type RecentVM = {
   id: string;
+  exerciseId: string;
+  entryId: string;
   exercise: string;
   day: string;
   mon: string;
@@ -188,13 +225,15 @@ export type RecentVM = {
 };
 
 export function vmRecent(data: GymData, limit?: number): RecentVM[] {
-  const all: { exercise: string; e: HistoryEntry }[] = [];
+  const all: { exerciseId: string; exercise: string; e: HistoryEntry }[] = [];
   for (const d of data.exercises)
-    for (const e of d.history || []) all.push({ exercise: d.name, e });
+    for (const e of d.history || []) all.push({ exerciseId: d.id, exercise: d.name, e });
   all.sort((a, b) => (a.e.date < b.e.date ? 1 : -1));
   const sliced = limit == null ? all : all.slice(0, limit);
   return sliced.map((x, i) => ({
     id: x.e.id + "_" + i,
+    exerciseId: x.exerciseId,
+    entryId: x.e.id,
     exercise: x.exercise,
     day: fmtDay(x.e.date),
     mon: fmtMon(x.e.date),

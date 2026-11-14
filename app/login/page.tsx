@@ -84,11 +84,11 @@ export default function LoginPage() {
     <div className="mx-auto flex min-h-dvh max-w-[480px] flex-col justify-center px-[22px]">
       <div className="animate-in">
         <div className="mb-7">
-          <div className="text-[13px] font-semibold tracking-[0.3px] text-accent">Gym Tracker</div>
-          <h1 className="mt-1 text-[30px] font-extrabold tracking-[-0.8px] text-ink">
+          <div className="fs-13 font-semibold tracking-[0.3px] text-accent">Gym Tracker</div>
+          <h1 className="mt-1 fs-30 font-extrabold tracking-[-0.8px] text-ink">
             {mode === "login" ? "Anmelden" : "Registrieren"}
           </h1>
-          <p className="mt-1 text-[13.5px] leading-snug text-ink-2">
+          <p className="mt-1 fs-13.5 leading-snug text-ink-2">
             {mode === "login"
               ? "Melde dich an, um deine Übungen und Trainings zu sehen."
               : "Erstelle ein Konto, um deine Trainings zu speichern."}
@@ -121,7 +121,7 @@ export default function LoginPage() {
 
           {error ? (
             <div
-              className="rounded-[12px] px-3.5 py-3 text-[13.5px] leading-snug"
+              className="rounded-[12px] px-3.5 py-3 fs-13.5 leading-snug"
               style={{ color: "#b0473b", background: "#f7e9e6" }}
               role="alert"
             >
@@ -130,7 +130,7 @@ export default function LoginPage() {
           ) : null}
 
           {info ? (
-            <div className="rounded-[12px] bg-accent-soft px-3.5 py-3 text-[13.5px] leading-snug text-accent" role="status">
+            <div className="rounded-[12px] bg-accent-soft px-3.5 py-3 fs-13.5 leading-snug text-accent" role="status">
               {info}
             </div>
           ) : null}
@@ -139,7 +139,7 @@ export default function LoginPage() {
             type="submit"
             disabled={!canSubmit}
             className={cn(
-              "mt-1 h-[50px] w-full rounded-[14px] text-[15px] font-bold text-white transition-colors",
+              "mt-1 h-[50px] w-full rounded-[14px] fs-15 font-bold text-white transition-colors",
               canSubmit ? "bg-accent" : "bg-[#cfd2cf]",
             )}
           >
@@ -147,7 +147,7 @@ export default function LoginPage() {
           </button>
         </form>
 
-        <div className="mt-5 text-center text-[13.5px] text-ink-2">
+        <div className="mt-5 text-center fs-13.5 text-ink-2">
           {mode === "login" ? (
             <>
               Noch kein Konto?{" "}

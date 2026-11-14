@@ -33,7 +33,7 @@ export function PhotoThumb({
           style={{ borderRadius: radius, borderColor: "#cfccc3" }}
         >
           <CameraIcon size={large ? 22 : 21} />
-          {large ? <span className="text-[10px] font-bold text-eyebrow">Foto</span> : null}
+          {large ? <span className="fs-10 font-bold text-eyebrow">Foto</span> : null}
         </div>
       )}
       {doneBadge ? (

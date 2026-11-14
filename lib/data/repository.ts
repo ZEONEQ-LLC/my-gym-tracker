@@ -16,6 +16,11 @@ export interface GymRepository {
   /** Append a logged training session to an exercise. */
   addHistoryEntry(userId: string, exerciseId: string, entry: HistoryEntry): Promise<GymData>;
 
+  /** Overwrite a logged session (date, variant, sets, note) — matched by entry id. */
+  updateHistoryEntry(userId: string, exerciseId: string, entry: HistoryEntry): Promise<GymData>;
+
+  deleteHistoryEntry(userId: string, exerciseId: string, entryId: string): Promise<GymData>;
+
   updateProfile(userId: string, patch: Partial<Profile>): Promise<GymData>;
 
   /** Bulk replace — used for dev seed and reset. */

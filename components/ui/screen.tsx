@@ -35,15 +35,15 @@ export function ScreenHeader({ title, subtitle, backLabel, onBack, right }: Scre
         <button
           type="button"
           onClick={back}
-          className="-ml-1 flex items-center gap-1 py-2 pr-2 text-[15px] font-semibold text-ink"
+          className="-ml-1 flex items-center gap-1 py-2 pr-2 fs-15 font-semibold text-ink"
         >
           {backLabel ? backLabel : <ChevronLeftIcon />}
         </button>
       </div>
       {title ? (
         <div className="flex min-w-0 flex-[2] flex-col items-center text-center leading-tight">
-          <span className="truncate text-[15px] font-bold text-ink">{title}</span>
-          {subtitle ? <span className="truncate text-[11.5px] text-ink-2">{subtitle}</span> : null}
+          <span className="truncate fs-15 font-bold text-ink">{title}</span>
+          {subtitle ? <span className="truncate fs-11.5 text-ink-2">{subtitle}</span> : null}
         </div>
       ) : (
         <div className="flex-[2]" />

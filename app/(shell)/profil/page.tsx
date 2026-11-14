@@ -31,7 +31,7 @@ export default function ProfilPage() {
   if (isPending || !data) {
     return (
       <div className="animate-in pt-3.5">
-        <h1 className="text-[30px] font-extrabold tracking-[-0.8px] text-ink">Profil</h1>
+        <h1 className="fs-30 font-extrabold tracking-[-0.8px] text-ink">Profil</h1>
         <CenteredNote>Lädt …</CenteredNote>
       </div>
     );
@@ -42,8 +42,8 @@ export default function ProfilPage() {
   return (
     <div className="animate-in">
       <header className="pt-3.5 pb-3">
-        <h1 className="text-[30px] font-extrabold tracking-[-0.8px] text-ink">Profil</h1>
-        <div className="mt-0.5 text-[13px] text-ink-2">Deine Angaben und das Erscheinungsbild.</div>
+        <h1 className="fs-30 font-extrabold tracking-[-0.8px] text-ink">Profil</h1>
+        <div className="mt-0.5 fs-13 text-ink-2">Deine Angaben und das Erscheinungsbild.</div>
       </header>
 
       <div className="flex flex-col gap-5">
@@ -89,14 +89,14 @@ export default function ProfilPage() {
             <button
               type="button"
               onClick={() => replaceAll({ exercises: seedExercises(), profile })}
-              className="h-[44px] rounded-[12px] bg-fill text-[14px] font-bold text-ink"
+              className="h-[44px] rounded-[12px] bg-fill fs-14 font-bold text-ink"
             >
               Beispieldaten laden
             </button>
             <button
               type="button"
               onClick={() => replaceAll({ ...emptyData(), profile })}
-              className="h-[44px] rounded-[12px] text-[14px] font-bold"
+              className="h-[44px] rounded-[12px] fs-14 font-bold"
               style={{ color: "#b0473b", background: "#f7e9e6" }}
             >
               Alle Übungen löschen
@@ -107,7 +107,7 @@ export default function ProfilPage() {
         <Field label="Konto">
           <Card className="flex flex-col gap-3 p-4">
             {user?.email ? (
-              <div className="text-[13.5px] text-ink-2">
+              <div className="fs-13.5 text-ink-2">
                 Angemeldet als <span className="font-semibold text-ink">{user.email}</span>
               </div>
             ) : null}
@@ -115,7 +115,7 @@ export default function ProfilPage() {
               type="button"
               onClick={signOut}
               disabled={signingOut}
-              className="h-[44px] rounded-[12px] border border-line text-[14px] font-bold text-ink"
+              className="h-[44px] rounded-[12px] border border-line fs-14 font-bold text-ink"
             >
               {signingOut ? "Wird abgemeldet …" : "Abmelden"}
             </button>

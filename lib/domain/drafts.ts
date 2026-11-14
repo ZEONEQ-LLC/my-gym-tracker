@@ -8,6 +8,8 @@ import {
   DEFAULT_TARGET_SETS,
   DEFAULT_VARIANT,
   Exercise,
+  HistoryEntry,
+  SetEntry,
 } from "./types";
 
 export type SetDraft = { reps: string; weight: string };
@@ -72,6 +74,28 @@ export function buildLogDraft(ex: Exercise, key: string): LogDraft {
 /** Log save is enabled once at least one set has reps > 0. */
 export function logHasValidSet(draft: LogDraft): boolean {
   return draft.sets.some((s) => (parseInt(s.reps, 10) || 0) > 0);
+}
+
+/** Draft for editing an already logged session: its own date, sets and note. */
+export function buildEntryDraft(entry: HistoryEntry): LogDraft {
+  return {
+    date: entry.date,
+    sets: entry.sets.map((s) => ({ reps: String(s.reps), weight: String(s.weight) })),
+    note: entry.note || "",
+  };
+}
+
+/**
+ * Parse the draft's sets for saving: reps as integers, weight accepting a
+ * decimal comma; sets without reps are dropped.
+ */
+export function parseLogSets(draft: LogDraft): SetEntry[] {
+  return draft.sets
+    .map((s) => ({
+      reps: parseInt(s.reps, 10) || 0,
+      weight: parseFloat(String(s.weight).replace(",", ".")) || 0,
+    }))
+    .filter((s) => s.reps > 0);
 }
 
 /** Edit-settings draft for one variant: its parameter rows, note and targets. */

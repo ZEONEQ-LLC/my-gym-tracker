@@ -29,7 +29,7 @@ export function StickyCta({
           onClick={onClick}
           disabled={disabled}
           className={cn(
-            "h-[50px] w-full rounded-[14px] text-[15px] font-bold text-white transition-colors",
+            "h-[50px] w-full rounded-[14px] fs-15 font-bold text-white transition-colors",
             disabled ? "bg-[#cfd2cf] text-white/90" : "bg-accent",
           )}
         >

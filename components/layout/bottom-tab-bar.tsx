@@ -24,10 +24,10 @@ export function BottomTabBar() {
             key={href}
             href={href}
             className="flex flex-1 flex-col items-center gap-1 pt-1"
-            style={{ color: active ? "var(--accent)" : "#9aa0a6" }}
+            style={{ color: active ? "var(--accent)" : "var(--color-muted)" }}
           >
             <Icon active={active} />
-            <span className="text-[11px] font-semibold tracking-tight">{label}</span>
+            <span className="fs-11 font-semibold tracking-tight">{label}</span>
           </Link>
         );
       })}

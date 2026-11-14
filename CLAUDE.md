@@ -35,7 +35,7 @@ Three layers; components never touch storage directly:
 
 2. **`lib/data/`** — storage + React data access.
    - `repository.ts` — the async `GymRepository` interface. Every method takes `userId`; mutations return the full updated `GymData`.
-   - `supabase-repository.ts` — **the active implementation**. Maps snake_case ↔ camelCase, `category` ↔ `group`, `jsonb` for `settings`/`sets`. Mutations re-`load()` so the cache always holds a consistent snapshot. `upsertExercise` writes only the exercise row; history is owned by `addHistoryEntry`.
+   - `supabase-repository.ts` — **the active implementation**. Maps snake_case ↔ camelCase, `category` ↔ `group`, `jsonb` for `settings`/`sets`. Mutations re-`load()` so the cache always holds a consistent snapshot. `upsertExercise` writes only the exercise row; history is owned by `addHistoryEntry` / `updateHistoryEntry` / `deleteHistoryEntry` (an update that matches no row throws).
    - `local-storage-repository.ts` — kept as a reference implementation, not wired in.
    - `index.ts` — the factory (`getRepository`), the only place that picks the backend.
    - `hooks.ts` — TanStack Query hooks. One query `["gym", userId]` per user, disabled until a user is signed in; mutations write through the repo and `setQueryData` the returned `GymData`.
@@ -49,7 +49,7 @@ Three layers; components never touch storage directly:
    - `/login` — sign in / sign up. **The only public route** — never gate it, or users lock themselves out.
    - `/api/keepalive` — Supabase keep-alive for the Vercel cron. Excluded from the proxy matcher (the cron has no session) and guarded by `Authorization: Bearer $CRON_SECRET` instead; must stay a dynamic route so every call reaches Postgres.
    - `(shell)/` route group = tab shell with `BottomTabBar`: `/` (Übungen), `/verlauf`, `/profil` (includes logout).
-   - `uebung/` (outside the group, so **no tab bar**): `neu`, `[id]`, `[id]/eintragen`, `[id]/einstellungen`.
+   - `uebung/` (outside the group, so **no tab bar**): `neu`, `[id]`, `[id]/eintragen`, `[id]/einstellungen`, `[id]/training/[entryId]` (one logged session; delete with inline confirm) and `[id]/training/[entryId]/bearbeiten` (edit it). Log and edit share `components/exercise/session-fields.tsx`; a variant switch re-prefills the sets when logging but keeps them when editing.
    - Navigation between list↔detail↔log uses `router.back()` so "return to where you came from" works without tracking it explicitly.
 
 **Database:** `supabase/schema.sql` defines `profiles`, `exercises` (PK `(user_id, id)` where `id` is the slug), `history_entries` (composite FK → exercises, `on delete cascade`), RLS policies (`auth.uid() = user_id` for every operation) and the `handle_new_user` trigger that creates a profile on signup. The user applies it manually in the Supabase SQL editor; keep it idempotent. Email confirmation is **off** in Supabase Auth, so signup logs in directly.
@@ -61,6 +61,7 @@ Three layers; components never touch storage directly:
 - **Drafts are string-typed** (raw input) and parsed to numbers only on save. Mirror this when adding form fields.
 - **Accent theming.** Colors are CSS variables `--accent` / `--accent-soft` on `<html>`, set at runtime by `components/layout/accent-sync.tsx` from `profile.accent`. Use the token classes (`bg-accent`, `text-accent`; see `@theme` in `app/globals.css`), never hard-code the green.
 - **Design tokens** live in `app/globals.css` under `@theme` (Tailwind v4 CSS-first). Fonts via `next/font` (Hanken Grotesk + JetBrains Mono → `font-sans`/`font-mono`).
+- **Font sizes: always `fs-<px>`, never `text-[Npx]`.** `fs-14` renders 14px × `--text-scale` (a custom `@utility` in `globals.css`, currently 1.2 because the owner needs larger type). Use the handoff's px value; decimals work (`fs-12.5`). Layout sizes stay in px, so check that text still fits fixed-width/height boxes when adding UI. The grey text tokens (`ink-2`, `muted`, `eyebrow`) are darker than the handoff for contrast; placeholders use `text-placeholder`.
 - **No device frame.** Screens fill the viewport and respect `env(safe-area-inset-*)`; the app column is capped at `max-w-[480px]`.
 - **New accounts start empty.** Seed/reset live under "Entwicklung" on the Profil screen and act on the signed-in user's Supabase rows; don't auto-seed.
 - **App icons are generated.** `scripts/generate-icons.mjs` holds the single SVG design and writes `app/icon.svg`, `app/favicon.ico`, `app/apple-icon.png` and `public/icons/*`; change the script and run `npm run icons`, never edit the outputs. The proxy matcher excludes `manifest.webmanifest` (browsers fetch it without cookies); Next can't add `crossorigin="use-credentials"` to the manifest link, so Vercel-Authentication-protected deployments can't serve it.

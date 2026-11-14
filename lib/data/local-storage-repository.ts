@@ -63,6 +63,24 @@ export class LocalStorageRepository implements GymRepository {
     return write({ ...data, exercises });
   }
 
+  async updateHistoryEntry(_userId: string, exerciseId: string, entry: HistoryEntry): Promise<GymData> {
+    const data = read();
+    const exercises = data.exercises.map((e) =>
+      e.id === exerciseId
+        ? { ...e, history: (e.history || []).map((h) => (h.id === entry.id ? entry : h)) }
+        : e,
+    );
+    return write({ ...data, exercises });
+  }
+
+  async deleteHistoryEntry(_userId: string, exerciseId: string, entryId: string): Promise<GymData> {
+    const data = read();
+    const exercises = data.exercises.map((e) =>
+      e.id === exerciseId ? { ...e, history: (e.history || []).filter((h) => h.id !== entryId) } : e,
+    );
+    return write({ ...data, exercises });
+  }
+
   async updateProfile(_userId: string, patch: Partial<Profile>): Promise<GymData> {
     const data = read();
     return write({ ...data, profile: { ...data.profile, ...patch } });

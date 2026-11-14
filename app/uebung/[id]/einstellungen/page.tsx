@@ -82,18 +82,18 @@ function EditForm({ exercise, variantKey }: { exercise: Exercise; variantKey: st
       <ScreenHeader backLabel="Abbrechen" title="Einstellungen" />
 
       <div className="no-scrollbar flex-1 px-[22px] pt-2" style={{ paddingBottom: 110 }}>
-        <div className="mb-4 text-[13px] text-ink-2">{context}</div>
+        <div className="mb-4 fs-13 text-ink-2">{context}</div>
 
         <SectionLabel className="mb-2">Zielvorgabe</SectionLabel>
         <div className="mb-5 flex items-center gap-3">
           <label className="flex-1">
             <NumberField value={draft.targetSets} onChange={(e) => setTarget("targetSets", e.target.value)} aria-label="Sätze" />
           </label>
-          <span className="text-[13px] text-muted">Sätze ×</span>
+          <span className="fs-13 text-muted">Sätze ×</span>
           <label className="flex-1">
             <NumberField value={draft.targetReps} onChange={(e) => setTarget("targetReps", e.target.value)} aria-label="Wiederholungen" />
           </label>
-          <span className="text-[13px] text-muted">Wdh</span>
+          <span className="fs-13 text-muted">Wdh</span>
         </div>
 
         <SectionLabel className="mb-2">Einstellungen</SectionLabel>
@@ -121,7 +121,7 @@ function EditForm({ exercise, variantKey }: { exercise: Exercise; variantKey: st
         <button
           type="button"
           onClick={addRow}
-          className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed text-[14px] font-bold text-ink-2"
+          className="mt-3 flex h-[46px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed fs-14 font-bold text-ink-2"
           style={{ borderColor: "#cfccc3" }}
         >
           <PlusIcon size={14} /> Eigenschaft hinzufügen

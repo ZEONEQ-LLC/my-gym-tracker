@@ -19,10 +19,10 @@ export function SegmentedControl({
             key={opt}
             type="button"
             onClick={() => onChange(opt)}
-            className="flex-1 rounded-[9px] px-2 py-2 text-[13.5px] font-semibold transition-colors"
+            className="flex-1 rounded-[9px] px-2 py-2 fs-13.5 font-semibold transition-colors"
             style={{
               background: active ? "#ffffff" : "transparent",
-              color: active ? "#1d2024" : "#85807a",
+              color: active ? "#1d2024" : "var(--color-ink-2)",
               boxShadow: active ? "0 1px 4px rgba(0,0,0,0.1)" : "none",
             }}
           >
