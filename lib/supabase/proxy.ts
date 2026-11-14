@@ -1,4 +1,4 @@
-// Session refresh + route gating for Next.js middleware.
+// Session refresh + route gating for the Next.js proxy (proxy.ts).
 //
 // On every matched request it binds a Supabase server client to the request/
 // response cookies and calls getUser() (refreshes an expired token and writes
@@ -9,7 +9,7 @@
 // Lock-out safety:
 //   • /login is the only public route and is NEVER redirected away when signed
 //     out, so the sign-in screen is always reachable.
-//   • static assets / images are excluded by the matcher in middleware.ts.
+//   • static assets / images are excluded by the matcher in proxy.ts.
 //   • redirect responses copy the freshly-set auth cookies, so a token refresh
 //     is never lost across the redirect.
 

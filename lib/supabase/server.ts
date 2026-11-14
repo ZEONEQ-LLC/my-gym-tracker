@@ -1,7 +1,7 @@
 // Supabase server client (Server Components, Route Handlers, Server Actions).
 // Reads/writes auth cookies via next/headers. The setAll try/catch guards the
 // case where cookies are written from a Server Component — there the cookie
-// store is read-only and the middleware (lib/supabase/middleware.ts) is what
+// store is read-only and the proxy (lib/supabase/proxy.ts) is what
 // actually refreshes the session, so swallowing the error is correct.
 
 import { createServerClient } from "@supabase/ssr";
@@ -24,7 +24,7 @@ export async function createClient() {
               cookieStore.set(name, value, options),
             );
           } catch {
-            // Called from a Server Component — ignore; middleware refreshes the
+            // Called from a Server Component — ignore; the proxy refreshes the
             // session cookie on the response instead.
           }
         },

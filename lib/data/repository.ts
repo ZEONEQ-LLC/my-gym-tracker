@@ -1,13 +1,9 @@
 // Storage-agnostic data access. Every method is async and scoped by `userId`
-// so the localStorage implementation can later be swapped for a Supabase one
-// without touching any caller. Mutations return the full updated GymData; the
-// query layer sets that straight into its cache (works equally for a
-// read-modify-write localStorage blob and for a Supabase round-trip).
+// (the signed-in Supabase user). The active backend is SupabaseRepository; the
+// factory in ./index.ts is the only place that chooses it. Mutations return the
+// full updated GymData, which the query layer writes straight into its cache.
 
 import { Exercise, GymData, HistoryEntry, Profile } from "@/lib/domain/types";
-
-/** Single implicit user today. A real userId slots in here for multi-user. */
-export const LOCAL_USER = "local";
 
 export interface GymRepository {
   load(userId: string): Promise<GymData>;
