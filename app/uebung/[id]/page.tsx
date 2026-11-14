@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
 import { PhotoUpload } from "@/components/exercise/photo";
 import { ProgressBars } from "@/components/ui/charts";
-import { PlusIcon } from "@/components/ui/icons";
+import { ChevronRightIcon, PlusIcon } from "@/components/ui/icons";
 import { Card, Eyebrow, Pill, SectionLabel } from "@/components/ui/primitives";
 import { Screen, ScreenHeader } from "@/components/ui/screen";
 import { SegmentedControl } from "@/components/ui/segmented-control";
@@ -52,7 +52,7 @@ export default function ExerciseDetailPage() {
     <Screen>
       <ScreenHeader
         right={
-          <Link href={editHref} className="text-[15px] font-semibold text-accent">
+          <Link href={editHref} className="fs-15 font-semibold text-accent">
             Bearbeiten
           </Link>
         }
@@ -70,7 +70,7 @@ export default function ExerciseDetailPage() {
           />
           <div className="min-w-0 flex-1">
             <Eyebrow>{vm.group}</Eyebrow>
-            <h1 className="mt-1 text-[24px] font-extrabold leading-tight tracking-[-0.5px] text-ink">
+            <h1 className="mt-1 fs-24 font-extrabold leading-tight tracking-[-0.5px] text-ink">
               {vm.name}
             </h1>
           </div>
@@ -101,9 +101,9 @@ export default function ExerciseDetailPage() {
                   className="flex items-center justify-between py-2.5"
                   style={i > 0 ? { borderTop: "1px solid #f0eee9" } : undefined}
                 >
-                  <span className="text-[14px] text-ink-2">{row.name}</span>
+                  <span className="fs-14 text-ink-2">{row.name}</span>
                   <span
-                    className="font-mono text-[14px] font-semibold"
+                    className="font-mono fs-14 font-semibold"
                     style={{ color: row.filled ? "#1d2024" : "#bdc0bf" }}
                   >
                     {row.display}
@@ -111,7 +111,7 @@ export default function ExerciseDetailPage() {
                 </div>
               ))
             ) : (
-              <div className="py-3 text-[13.5px] text-ink-2">Keine Einstellungen hinterlegt.</div>
+              <div className="py-3 fs-13.5 text-ink-2">Keine Einstellungen hinterlegt.</div>
             )}
           </Card>
         </div>
@@ -120,7 +120,7 @@ export default function ExerciseDetailPage() {
         {vm.hasNote ? (
           <div className="mt-5">
             <SectionLabel className="mb-2">Zu beachten</SectionLabel>
-            <div className="rounded-[15px] bg-fill-2 px-4 py-3 text-[14px] leading-snug text-ink">
+            <div className="rounded-[15px] bg-fill-2 px-4 py-3 fs-14 leading-snug text-ink">
               {vm.note}
             </div>
           </div>
@@ -131,7 +131,7 @@ export default function ExerciseDetailPage() {
           <div className="mt-6">
             <div className="mb-2 flex items-baseline justify-between">
               <SectionLabel>Fortschritt</SectionLabel>
-              <span className="text-[12.5px] text-ink-2">
+              <span className="fs-12.5 text-ink-2">
                 Best <span className="font-mono font-bold text-ink">{vm.best} kg</span>
               </span>
             </div>
@@ -147,29 +147,39 @@ export default function ExerciseDetailPage() {
           {vm.hasHistory ? (
             <div className="flex flex-col gap-2.5">
               {vm.history.map((h) => (
-                <Card key={h.id} className="px-4 py-3">
-                  <div className="flex items-baseline justify-between">
-                    <span className="text-[14px] font-bold text-ink">{h.date}</span>
-                    <span className="text-[12px] text-muted">{h.rel}</span>
-                  </div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {h.sets.map((s, i) => (
-                      <span
-                        key={i}
-                        className="rounded-[7px] bg-fill-2 px-2 py-1 font-mono text-[12.5px] font-semibold text-ink"
-                      >
-                        {s.label}
+                <Link
+                  key={h.id}
+                  href={`/uebung/${id}/training/${encodeURIComponent(h.id)}`}
+                  className="block"
+                  aria-label={`Training vom ${h.date} öffnen`}
+                >
+                  <Card className="px-4 py-3">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="fs-14 font-bold text-ink">{h.date}</span>
+                      <span className="flex items-center gap-1 self-center fs-12 text-muted">
+                        {h.rel}
+                        <ChevronRightIcon size={15} />
                       </span>
-                    ))}
-                  </div>
-                  {h.hasNote ? (
-                    <div className="mt-2 text-[13px] leading-snug text-ink-2">{h.note}</div>
-                  ) : null}
-                </Card>
+                    </div>
+                    <div className="mt-2 flex flex-wrap gap-1.5">
+                      {h.sets.map((s, i) => (
+                        <span
+                          key={i}
+                          className="rounded-[7px] bg-fill-2 px-2 py-1 font-mono fs-12.5 font-semibold text-ink"
+                        >
+                          {s.label}
+                        </span>
+                      ))}
+                    </div>
+                    {h.hasNote ? (
+                      <div className="mt-2 fs-13 leading-snug text-ink-2">{h.note}</div>
+                    ) : null}
+                  </Card>
+                </Link>
               ))}
             </div>
           ) : (
-            <div className="rounded-[15px] border border-dashed bg-surface px-4 py-6 text-center text-[13.5px] text-ink-2" style={{ borderColor: "#cfccc3" }}>
+            <div className="rounded-[15px] border border-dashed bg-surface px-4 py-6 text-center fs-13.5 text-ink-2" style={{ borderColor: "#cfccc3" }}>
               Noch nicht trainiert.
             </div>
           )}

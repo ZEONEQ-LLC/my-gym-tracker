@@ -24,7 +24,7 @@ npm run typecheck  # tsc --noEmit
 npm run icons      # App-Icons neu erzeugen (scripts/generate-icons.mjs)
 ```
 
-`build`, `lint` und `typecheck` laufen sauber durch. Der komplette Nutzer-Flow wurde zuletzt im November 2026 nach dem Abhängigkeits-Update im Browser gegen Supabase verifiziert (Login, Route-Schutz, Übung mit Varianten anlegen, Einstellungen bearbeiten, Training eintragen inkl. Varianten-Wechsel, Persistenz, Akzent, Logout).
+`build`, `lint` und `typecheck` laufen sauber durch. Der komplette Nutzer-Flow wurde zuletzt im November 2026 nach dem Abhängigkeits-Update im Browser gegen Supabase verifiziert (Login, Route-Schutz, Übung mit Varianten anlegen, Einstellungen bearbeiten, Training eintragen inkl. Varianten-Wechsel, Persistenz, Akzent, Logout); das nachträgliche Bearbeiten und Löschen von Trainings ebenfalls im November 2026.
 
 ## Einrichtung
 
@@ -58,6 +58,12 @@ Tab-Shell (`Übungen` / `Verlauf` / `Profil`) plus gepushte Sub-Screens:
 | `/uebung/[id]` | Detail: Einstellungen, Fortschritts-Chart, Verlauf |
 | `/uebung/[id]/eintragen` | Training eintragen (Log) |
 | `/uebung/[id]/einstellungen` | Einstellungen / Zielvorgabe bearbeiten |
+| `/uebung/[id]/training/[entryId]` | Trainingsdetail: Sätze, Kennzahlen, Notiz, Löschen (mit Bestätigung) |
+| `/uebung/[id]/training/[entryId]/bearbeiten` | Ein eingetragenes Training nachträglich ändern (Datum, Variante, Sätze, Notiz) |
+
+Trainings im Verlauf einer Übung und unter „Alle Trainings" (Tab Verlauf) sind antippbar und führen zum Trainingsdetail.
+
+**Schriftgröße:** Alle Schriftgrößen sind als `fs-<px>` notiert (die px-Werte aus dem Design-Handoff) und werden mit dem Faktor `--text-scale` in `app/globals.css` multipliziert (aktuell `1.2`, zugunsten der Lesbarkeit). Ein Wert dort ändert die Schrift in der ganzen App; Abstände und Größen der Elemente bleiben gleich. Die grauen Nebentexte sind gegenüber dem Handoff dunkler (Kontrast ≥ 4:1).
 
 ## Datenhaltung
 

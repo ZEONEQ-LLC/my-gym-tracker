@@ -8,12 +8,12 @@ export function ProgressBars({ bars }: { bars: BarVM[] }) {
     <div className="flex h-[112px] items-end justify-between gap-2">
       {bars.map((b, i) => (
         <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
-          <span className="font-mono text-[11px] font-semibold text-ink-2">{b.weight}</span>
+          <span className="font-mono fs-11 font-semibold text-ink-2">{b.weight}</span>
           <div
             className="w-full rounded-t-[6px]"
             style={{ height: b.h, background: b.accent ? "var(--accent)" : "#d7e7df" }}
           />
-          <span className="text-[10.5px] text-muted">{b.label}</span>
+          <span className="fs-10.5 text-muted">{b.label}</span>
         </div>
       ))}
     </div>
@@ -27,7 +27,7 @@ export function WeekBars({ weeks }: { weeks: WeekBarVM[] }) {
       {weeks.map((w, i) => (
         <div key={i} className="flex flex-1 flex-col items-center gap-1.5">
           <span
-            className="font-mono text-[11px] font-semibold"
+            className="font-mono fs-11 font-semibold"
             style={{ color: w.empty ? "#c4c8cb" : "#6b7177" }}
           >
             {w.count}
@@ -40,8 +40,8 @@ export function WeekBars({ weeks }: { weeks: WeekBarVM[] }) {
             }}
           />
           <span
-            className="text-[10px]"
-            style={{ color: w.isCurrent ? "var(--accent)" : "#aab0b5", fontWeight: w.isCurrent ? 700 : 400 }}
+            className="fs-10"
+            style={{ color: w.isCurrent ? "var(--accent)" : "var(--color-muted)", fontWeight: w.isCurrent ? 700 : 400 }}
           >
             {w.label}
           </span>

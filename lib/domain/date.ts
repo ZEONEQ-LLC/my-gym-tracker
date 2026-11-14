@@ -36,6 +36,16 @@ export function fmtDate(iso: string): string {
   return parseD(iso).toLocaleDateString("de-CH", { day: "numeric", month: "long" });
 }
 
+/** Full date for the training detail, e.g. "Sonntag, 9. November 2026". */
+export function fmtDateLong(iso: string): string {
+  return parseD(iso).toLocaleDateString("de-CH", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+}
+
 export function fmtDay(iso: string): string {
   return String(parseD(iso).getDate());
 }

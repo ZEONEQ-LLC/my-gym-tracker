@@ -146,7 +146,7 @@ export class SupabaseRepository implements GymRepository {
 
   async upsertExercise(userId: string, exercise: Exercise): Promise<GymData> {
     const supabase = this.client();
-    // Only the exercise row is written here; history is owned by addHistoryEntry.
+    // Only the exercise row is written here; history is owned by the *HistoryEntry methods.
     const { error } = await supabase.from("exercises").upsert(exerciseToRow(userId, exercise));
     if (error) throw error;
     return this.load(userId);
@@ -169,6 +169,35 @@ export class SupabaseRepository implements GymRepository {
     const { error } = await supabase
       .from("history_entries")
       .insert(historyToRow(userId, exerciseId, entry));
+    if (error) throw error;
+    return this.load(userId);
+  }
+
+  async updateHistoryEntry(userId: string, exerciseId: string, entry: HistoryEntry): Promise<GymData> {
+    const supabase = this.client();
+    const { user_id, id, exercise_id, ...fields } = historyToRow(userId, exerciseId, entry);
+    // .select() so an update that matched no row (deleted elsewhere) surfaces
+    // as an error instead of silently succeeding.
+    const { data, error } = await supabase
+      .from("history_entries")
+      .update(fields)
+      .eq("user_id", user_id)
+      .eq("exercise_id", exercise_id)
+      .eq("id", id)
+      .select("id");
+    if (error) throw error;
+    if (!data?.length) throw new Error("Training nicht gefunden.");
+    return this.load(userId);
+  }
+
+  async deleteHistoryEntry(userId: string, exerciseId: string, entryId: string): Promise<GymData> {
+    const supabase = this.client();
+    const { error } = await supabase
+      .from("history_entries")
+      .delete()
+      .eq("user_id", userId)
+      .eq("exercise_id", exerciseId)
+      .eq("id", entryId);
     if (error) throw error;
     return this.load(userId);
   }

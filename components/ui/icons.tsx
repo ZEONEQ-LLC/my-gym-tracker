@@ -84,6 +84,24 @@ export function ChevronLeftIcon({ size = 20, className, strokeWidth = 2 }: IconP
   );
 }
 
+export function ChevronRightIcon({ size = 16, className, strokeWidth = 2 }: IconProps) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={strokeWidth}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className={className}
+    >
+      <path d="M9 5l7 7-7 7" />
+    </svg>
+  );
+}
+
 export function CloseIcon({ size = 16, className, strokeWidth = 2 }: IconProps) {
   return (
     <svg

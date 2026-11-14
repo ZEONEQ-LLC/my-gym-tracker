@@ -59,6 +59,22 @@ export function useAddHistoryEntry() {
   return (exId: string, entry: HistoryEntry) => m.mutateAsync([exId, entry]);
 }
 
+export function useUpdateHistoryEntry() {
+  const userId = useUserId();
+  const m = useGymMutation(userId, (exId: string, entry: HistoryEntry) =>
+    getRepository().updateHistoryEntry(userId as string, exId, entry),
+  );
+  return (exId: string, entry: HistoryEntry) => m.mutateAsync([exId, entry]);
+}
+
+export function useDeleteHistoryEntry() {
+  const userId = useUserId();
+  const m = useGymMutation(userId, (exId: string, entryId: string) =>
+    getRepository().deleteHistoryEntry(userId as string, exId, entryId),
+  );
+  return (exId: string, entryId: string) => m.mutateAsync([exId, entryId]);
+}
+
 export function useUpdateProfile() {
   const userId = useUserId();
   const m = useGymMutation(userId, (patch: Partial<Profile>) =>

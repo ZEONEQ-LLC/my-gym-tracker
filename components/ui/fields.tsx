@@ -3,7 +3,7 @@
 import { cn } from "@/lib/cn";
 
 const baseField =
-  "h-[50px] w-full rounded-[13px] border border-line bg-surface px-3.5 text-[15px] text-ink placeholder:text-muted focus:border-accent";
+  "h-[50px] w-full rounded-[13px] border border-line bg-surface px-3.5 fs-15 text-ink placeholder:text-placeholder focus:border-accent";
 
 export function TextField(props: React.InputHTMLAttributes<HTMLInputElement>) {
   return <input {...props} className={cn(baseField, props.className)} />;
@@ -25,7 +25,7 @@ export function TextArea(props: React.TextareaHTMLAttributes<HTMLTextAreaElement
     <textarea
       {...props}
       className={cn(
-        "min-h-[84px] w-full rounded-[13px] border border-line bg-surface px-3.5 py-3 text-[15px] leading-snug text-ink placeholder:text-muted focus:border-accent",
+        "min-h-[84px] w-full rounded-[13px] border border-line bg-surface px-3.5 py-3 fs-15 leading-snug text-ink placeholder:text-placeholder focus:border-accent",
         props.className,
       )}
     />
@@ -42,7 +42,7 @@ export function SearchField({
       {icon}
       <input
         {...props}
-        className="h-full flex-1 bg-transparent text-[15px] text-ink placeholder:text-muted"
+        className="h-full flex-1 bg-transparent fs-15 text-ink placeholder:text-placeholder"
       />
     </div>
   );

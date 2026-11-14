@@ -10,10 +10,14 @@
   --color-accent: var(--accent, #117a57);
   --color-accent-soft: var(--accent-soft, #e4f1ea);
 
+  /* Secondary text greys, darkened from the handoff (#8a8f95 / #9aa0a6 /
+     #a7a399, ~2.5–3:1) to ≥4:1 on the light surfaces for readability. */
   --color-ink: #1d2024;
-  --color-ink-2: #8a8f95;
-  --color-muted: #9aa0a6;
-  --color-eyebrow: #a7a399;
+  --color-ink-2: #5f656b;
+  --color-muted: #6f757b;
+  --color-eyebrow: #7d796f;
+  /* Input placeholders keep the light grey so they don't read as values. */
+  --color-placeholder: #9aa0a6;
 
   --color-surface: #fdfcf9;
   --color-line: #e8e5dd;
@@ -39,6 +43,16 @@
 :root {
   --accent: #117a57;
   --accent-soft: #e4f1ea;
+  /* Global text size multiplier. Every font size is written as `fs-<px>` (the
+     handoff's px value) and rendered at px × --text-scale. Layout sizes stay
+     in px, so only the type grows. Not in @theme: `--text-*` is Tailwind's
+     font-size namespace. */
+  --text-scale: 1.2;
+}
+
+/* `fs-14` → font-size: 14px × --text-scale (decimals work: `fs-12.5`). */
+@utility fs-* {
+  font-size: calc(--value(number) * 1px * var(--text-scale));
 }
 
 * {

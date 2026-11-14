@@ -24,10 +24,10 @@ export default function ExercisesPage() {
     <div className="animate-in">
       <header className="flex items-end justify-between pt-3.5 pb-2">
         <div>
-          <div className="text-[13px] font-semibold tracking-[0.3px] text-accent">{greeting}</div>
-          <h1 className="mt-0.5 text-[30px] font-extrabold tracking-[-0.8px] text-ink">Übungen</h1>
+          <div className="fs-13 font-semibold tracking-[0.3px] text-accent">{greeting}</div>
+          <h1 className="mt-0.5 fs-30 font-extrabold tracking-[-0.8px] text-ink">Übungen</h1>
         </div>
-        <div className="max-w-[150px] pb-1.5 text-right text-[12.5px] leading-tight text-ink-2">{goal}</div>
+        <div className="max-w-[150px] pb-1.5 text-right fs-12.5 leading-tight text-ink-2">{goal}</div>
       </header>
 
       <div className="pb-3.5 pt-1.5">
@@ -45,8 +45,8 @@ export default function ExercisesPage() {
         <div className="pt-2">
           <CenteredNote>
             <div>
-              <div className="text-[16px] font-bold text-ink">Noch keine Übungen</div>
-              <div className="mt-1 text-[13px] text-ink-2">
+              <div className="fs-16 font-bold text-ink">Noch keine Übungen</div>
+              <div className="mt-1 fs-13 text-ink-2">
                 Lege deine erste Übung an – mit oder ohne Maschine.
               </div>
             </div>
@@ -79,7 +79,7 @@ function NewExerciseButton() {
   return (
     <Link
       href="/uebung/neu"
-      className="mt-1.5 flex h-[52px] w-full items-center justify-center gap-2 rounded-[16px] border-[1.5px] border-dashed text-[14px] font-bold text-ink-2"
+      className="mt-1.5 flex h-[52px] w-full items-center justify-center gap-2 rounded-[16px] border-[1.5px] border-dashed fs-14 font-bold text-ink-2"
       style={{ borderColor: "#cfccc3" }}
     >
       <PlusIcon size={15} />

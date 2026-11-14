@@ -16,11 +16,11 @@ export function ExerciseCard({ card }: { card: ListCardVM }) {
       <Link href={`/uebung/${id}`} className="flex min-w-0 flex-1 items-center gap-3 p-2.5">
         <PhotoThumb photo={card.photo} size={54} radius={13} doneBadge={doneToday} />
         <div className="min-w-0 flex-1">
-          <div className="truncate text-[16px] font-bold text-ink">{name}</div>
+          <div className="truncate fs-16 font-bold text-ink">{name}</div>
           <div
-            className="truncate text-[13px]"
+            className="truncate fs-13"
             style={{
-              color: doneToday ? "var(--accent)" : "#9aa0a6",
+              color: doneToday ? "var(--accent)" : "var(--color-muted)",
               fontWeight: doneToday ? 700 : 500,
             }}
           >
@@ -30,7 +30,7 @@ export function ExerciseCard({ card }: { card: ListCardVM }) {
       </Link>
       <Link
         href={`/uebung/${id}/eintragen`}
-        className="flex w-[64px] shrink-0 flex-col items-center justify-center gap-1 border-l text-[11px] font-bold"
+        className="flex w-[78px] shrink-0 flex-col items-center justify-center gap-1 border-l fs-11 font-bold"
         style={
           doneToday
             ? { background: "var(--accent)", color: "#fff", borderColor: "var(--accent)" }

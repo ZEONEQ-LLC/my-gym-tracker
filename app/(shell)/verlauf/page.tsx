@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo } from "react";
 import { WeekBars } from "@/components/ui/charts";
 import { DateBadge, DeltaChip, StatTile } from "@/components/ui/chips";
+import { ChevronRightIcon } from "@/components/ui/icons";
 import { Card, SectionLabel } from "@/components/ui/primitives";
 import { CenteredNote, EmptyState } from "@/components/ui/states";
 import { useGymData } from "@/lib/data/hooks";
@@ -16,8 +18,8 @@ export default function VerlaufPage() {
   return (
     <div className="animate-in">
       <header className="pt-3.5 pb-3">
-        <h1 className="text-[30px] font-extrabold tracking-[-0.8px] text-ink">Verlauf</h1>
-        <div className="mt-0.5 text-[13px] text-ink-2">Dein Fortschritt und deine Konsequenz.</div>
+        <h1 className="fs-30 font-extrabold tracking-[-0.8px] text-ink">Verlauf</h1>
+        <div className="mt-0.5 fs-13 text-ink-2">Dein Fortschritt und deine Konsequenz.</div>
       </header>
 
       {isPending ? (
@@ -38,7 +40,7 @@ export default function VerlaufPage() {
           <section className="mt-6">
             <div className="mb-2 flex items-baseline justify-between">
               <SectionLabel>Konsequenz</SectionLabel>
-              <span className="text-[12px] text-ink-2">Ziel {progress.weekGoal}× / Woche</span>
+              <span className="fs-12 text-ink-2">Ziel {progress.weekGoal}× / Woche</span>
             </div>
             <Card className="px-4 py-4">
               <WeekBars weeks={progress.weeks} />
@@ -52,8 +54,8 @@ export default function VerlaufPage() {
                 {progress.exercises.map((ex) => (
                   <Card key={ex.name} className="flex items-center justify-between px-4 py-3">
                     <div className="min-w-0">
-                      <div className="truncate text-[15px] font-bold text-ink">{ex.name}</div>
-                      <div className="text-[12.5px] text-ink-2">
+                      <div className="truncate fs-15 font-bold text-ink">{ex.name}</div>
+                      <div className="fs-12.5 text-ink-2">
                         Best <span className="font-mono font-semibold text-ink">{ex.best} kg</span> · {ex.sub}
                       </div>
                     </div>
@@ -68,14 +70,21 @@ export default function VerlaufPage() {
             <SectionLabel className="mb-2">Alle Trainings</SectionLabel>
             <div className="flex flex-col gap-2.5">
               {recent.map((r) => (
-                <Card key={r.id} className="flex items-center gap-3 px-3 py-2.5">
-                  <DateBadge day={r.day} mon={r.mon} />
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-[15px] font-bold text-ink">{r.exercise}</div>
-                    <div className="text-[12.5px] text-ink-2">{r.setText}</div>
-                  </div>
-                  <span className="font-mono text-[14px] font-bold text-ink">{r.topWeight} kg</span>
-                </Card>
+                <Link
+                  key={r.id}
+                  href={`/uebung/${encodeURIComponent(r.exerciseId)}/training/${encodeURIComponent(r.entryId)}`}
+                  className="block"
+                >
+                  <Card className="flex items-center gap-3 px-3 py-2.5">
+                    <DateBadge day={r.day} mon={r.mon} />
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate fs-15 font-bold text-ink">{r.exercise}</div>
+                      <div className="fs-12.5 text-ink-2">{r.setText}</div>
+                    </div>
+                    <span className="font-mono fs-14 font-bold text-ink">{r.topWeight} kg</span>
+                    <ChevronRightIcon size={15} className="-ml-1 shrink-0 text-muted" />
+                  </Card>
+                </Link>
               ))}
             </div>
           </section>

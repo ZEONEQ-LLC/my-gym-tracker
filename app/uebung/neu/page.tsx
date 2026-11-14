@@ -85,7 +85,7 @@ export default function NewExercisePage() {
               onChange={(url) => patch({ photo: url })}
               onRemove={() => patch({ photo: null })}
             />
-            <div className="text-[12.5px] leading-snug text-ink-2">
+            <div className="fs-12.5 leading-snug text-ink-2">
               {draft.photo ? "Tippe auf ✕ zum Entfernen." : "Optional – Maschine fotografieren oder hochladen."}
             </div>
           </div>
@@ -101,7 +101,7 @@ export default function NewExercisePage() {
                   key={g}
                   type="button"
                   onClick={() => patch({ group: g, customGroup: "" })}
-                  className="rounded-full border px-3 py-1.5 text-[13px] font-semibold"
+                  className="rounded-full border px-3 py-1.5 fs-13 font-semibold"
                   style={{
                     background: on ? "var(--accent-soft)" : "#fff",
                     borderColor: on ? "var(--accent)" : "#e6e4df",
@@ -157,7 +157,7 @@ export default function NewExercisePage() {
               <button
                 type="button"
                 onClick={() => patch({ variantRows: [...draft.variantRows, { name: "" }] })}
-                className="flex h-[44px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed text-[13.5px] font-bold text-ink-2"
+                className="flex h-[44px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed fs-13.5 font-bold text-ink-2"
                 style={{ borderColor: "#cfccc3" }}
               >
                 <PlusIcon size={13} /> Variante hinzufügen
@@ -172,11 +172,11 @@ export default function NewExercisePage() {
             <label className="flex-1">
               <NumberField value={draft.targetSets} onChange={(e) => patch({ targetSets: e.target.value.replace(/[^0-9]/g, "") })} aria-label="Sätze" />
             </label>
-            <span className="text-[13px] text-muted">Sätze ×</span>
+            <span className="fs-13 text-muted">Sätze ×</span>
             <label className="flex-1">
               <NumberField value={draft.targetReps} onChange={(e) => patch({ targetReps: e.target.value.replace(/[^0-9]/g, "") })} aria-label="Wiederholungen" />
             </label>
-            <span className="text-[13px] text-muted">Wdh</span>
+            <span className="fs-13 text-muted">Wdh</span>
           </div>
         </div>
 
@@ -221,7 +221,7 @@ export default function NewExercisePage() {
           <button
             type="button"
             onClick={() => patch({ paramRows: [...draft.paramRows, { name: "", value: "" }] })}
-            className="mt-3 flex h-[44px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed text-[13.5px] font-bold text-ink-2"
+            className="mt-3 flex h-[44px] w-full items-center justify-center gap-2 rounded-[13px] border border-dashed fs-13.5 font-bold text-ink-2"
             style={{ borderColor: "#cfccc3" }}
           >
             <PlusIcon size={13} /> Eigenschaft hinzufügen
