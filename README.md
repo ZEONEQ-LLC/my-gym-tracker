@@ -31,7 +31,9 @@ npm run typecheck  # tsc --noEmit
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
+   CRON_SECRET=<zufälliger String, z. B. openssl rand -hex 32>
    ```
+   `CRON_SECRET` braucht nur der Keep-alive (siehe Deployment); er muss in Vercel für **Production** mit demselben Wert gesetzt sein.
 2. **Schema** einmalig im Supabase SQL-Editor ausführen: `supabase/schema.sql` (Tabellen, RLS-Policies, Trigger für das Profil bei Registrierung). Das Skript ist idempotent und darf wiederholt laufen.
 3. **Supabase Auth:** „Confirm email" ist ausgeschaltet → eine Registrierung meldet direkt an.
 
@@ -74,7 +76,8 @@ Der gesamte Zustand eines Nutzers (`GymData = { exercises, profile }`) wird übe
 
 - Vercel baut jeden PR als **Preview** und `main` als **Production**.
 - Die beiden `NEXT_PUBLIC_SUPABASE_*`-Variablen müssen in Vercel für **Preview und Production** gesetzt sein — fehlen sie, scheitert der Proxy mit `MIDDLEWARE_INVOCATION_FAILED` (500 auf allen Routen).
-- Workflow: Feature-Branch → PR → Squash-Merge auf `main`.
+- Workflow: Feature-Branch → PR → Squash-Merge auf `main`. GitHub löscht gemergte Branches automatisch.
+- **Supabase Keep-alive:** Das Gratis-Paket pausiert ein Projekt nach 7 Tagen ohne Aktivität. Ein **Vercel Cron Job** (`vercel.json`, täglich 06:00 UTC) ruft `/api/keepalive` auf, das eine einzige billige Abfrage an Postgres schickt. Der Endpunkt antwortet nur mit gültigem `Authorization: Bearer <CRON_SECRET>` (Vercel sendet den Header automatisch, sobald `CRON_SECRET` gesetzt ist) und ist vom Proxy-Gating ausgenommen. Crons laufen nur auf dem Production-Deployment; manuell auslösen lässt sich der Job in Vercel unter Settings → Cron Jobs.
 
 ## Start-Daten
 
