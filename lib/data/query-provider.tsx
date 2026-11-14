@@ -9,8 +9,9 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
       new QueryClient({
         defaultOptions: {
           queries: {
-            // Data is local; never goes stale on its own and refetching on
-            // window focus would only re-read localStorage.
+            // Data only changes through this app's own mutations, which write
+            // the fresh snapshot into the cache — so no background refetching.
+            // Trade-off: edits made on another device appear after a reload.
             staleTime: Infinity,
             gcTime: Infinity,
             refetchOnWindowFocus: false,

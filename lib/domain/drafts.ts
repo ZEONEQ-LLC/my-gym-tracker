@@ -40,9 +40,14 @@ export type NewExerciseDraft = {
   note: string;
 };
 
-/** Variant key for an exercise given the active variant ('default' when none). */
+/**
+ * Variant key for an exercise given the active variant ('default' when none).
+ * An unknown variant (e.g. a stale `?v=` in the URL) falls back to the first one,
+ * so nothing is ever saved under a variant the exercise doesn't have.
+ */
 export function keyFor(ex: Exercise, activeVariant: string | null): string {
-  return ex.variants ? activeVariant ?? ex.variants[0] : DEFAULT_VARIANT;
+  if (!ex.variants) return DEFAULT_VARIANT;
+  return activeVariant && ex.variants.includes(activeVariant) ? activeVariant : ex.variants[0];
 }
 
 /**
@@ -67,6 +72,17 @@ export function buildLogDraft(ex: Exercise, key: string): LogDraft {
 /** Log save is enabled once at least one set has reps > 0. */
 export function logHasValidSet(draft: LogDraft): boolean {
   return draft.sets.some((s) => (parseInt(s.reps, 10) || 0) > 0);
+}
+
+/** Edit-settings draft for one variant: its parameter rows, note and targets. */
+export function buildEditDraft(ex: Exercise, key: string): EditDraft {
+  const settings = (ex.settings && ex.settings[key]) || {};
+  return {
+    rows: Object.keys(settings).map((name) => ({ name, value: String(settings[name] ?? "") })),
+    note: ex.note || "",
+    targetSets: String(ex.targetSets || DEFAULT_TARGET_SETS),
+    targetReps: String(ex.targetReps || DEFAULT_TARGET_REPS),
+  };
 }
 
 export function slugify(s: string): string {

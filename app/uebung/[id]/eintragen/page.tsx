@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NumberField, TextArea, TextField } from "@/components/ui/fields";
 import { PlusIcon, TrashIcon } from "@/components/ui/icons";
 import { SectionLabel } from "@/components/ui/primitives";
@@ -11,58 +11,44 @@ import { CenteredNote } from "@/components/ui/states";
 import { StickyCta } from "@/components/ui/sticky-cta";
 import { useAddHistoryEntry, useGymData } from "@/lib/data/hooks";
 import { buildLogDraft, keyFor, logHasValidSet, type LogDraft } from "@/lib/domain/drafts";
+import type { Exercise } from "@/lib/domain/types";
 
 export default function LogPage() {
-  const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const queryVariant = useSearchParams().get("v");
   const { data, isPending } = useGymData();
-  const addHistoryEntry = useAddHistoryEntry();
-
   const exercise = data?.exercises.find((e) => e.id === id);
-  const [variant, setVariant] = useState<string | null>(queryVariant);
-  const [draft, setDraft] = useState<LogDraft | null>(null);
 
-  const activeVariant = exercise?.variants ? variant ?? exercise.variants[0] : null;
-  const key = exercise ? keyFor(exercise, activeVariant) : "default";
-
-  // Build/prefill the draft once the exercise is available; rebuild when the
-  // variant changes but keep the entered date + note (matches the prototype).
-  useEffect(() => {
-    if (!exercise) return;
-    setDraft((prev) => {
-      const next = buildLogDraft(exercise, key);
-      if (prev) {
-        next.date = prev.date;
-        next.note = prev.note;
-      }
-      return next;
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exercise?.id, key]);
-
-  if (isPending || (exercise && !draft)) {
+  if (isPending || !exercise) {
     return (
       <Screen>
         <ScreenHeader backLabel="Abbrechen" title="Training eintragen" />
-        <CenteredNote>Lädt …</CenteredNote>
+        <CenteredNote>{isPending ? "Lädt …" : "Übung nicht gefunden."}</CenteredNote>
       </Screen>
     );
   }
-  if (!exercise || !draft) {
-    return (
-      <Screen>
-        <ScreenHeader backLabel="Abbrechen" title="Training eintragen" />
-        <CenteredNote>Übung nicht gefunden.</CenteredNote>
-      </Screen>
-    );
-  }
+
+  // The form owns its draft state; keying by exercise resets it if the user
+  // lands on a different exercise.
+  return <LogForm key={exercise.id} exercise={exercise} initialVariant={queryVariant} />;
+}
+
+function LogForm({ exercise, initialVariant }: { exercise: Exercise; initialVariant: string | null }) {
+  const router = useRouter();
+  const addHistoryEntry = useAddHistoryEntry();
+  const [variantKey, setVariantKey] = useState(() => keyFor(exercise, initialVariant));
+  const [draft, setDraft] = useState<LogDraft>(() => buildLogDraft(exercise, variantKey));
 
   const canSave = logHasValidSet(draft);
 
+  // Switching variant re-prefills the sets for that variant but keeps the
+  // entered date + note (matches the prototype's onLogVariant).
+  function switchVariant(v: string) {
+    setVariantKey(v);
+    setDraft((d) => ({ ...buildLogDraft(exercise, v), date: d.date, note: d.note }));
+  }
   function setSet(i: number, field: "reps" | "weight", value: string) {
     setDraft((d) => {
-      if (!d) return d;
       const sets = d.sets.slice();
       sets[i] = { ...sets[i], [field]: value };
       return { ...d, sets };
@@ -70,14 +56,13 @@ export default function LogPage() {
   }
   function addSet() {
     setDraft((d) => {
-      if (!d) return d;
       const last = d.sets[d.sets.length - 1];
       return { ...d, sets: [...d.sets, { reps: "", weight: last ? last.weight : "" }] };
     });
   }
   function removeSet(i: number) {
     setDraft((d) => {
-      if (!d || d.sets.length <= 1) return d;
+      if (d.sets.length <= 1) return d;
       const sets = d.sets.slice();
       sets.splice(i, 1);
       return { ...d, sets };
@@ -85,7 +70,7 @@ export default function LogPage() {
   }
 
   async function save() {
-    if (!exercise || !draft || !canSave) return;
+    if (!canSave) return;
     const sets = draft.sets
       .map((s) => ({
         reps: parseInt(s.reps, 10) || 0,
@@ -96,7 +81,7 @@ export default function LogPage() {
     await addHistoryEntry(exercise.id, {
       id: "e" + Date.now(),
       date: draft.date,
-      variant: key,
+      variant: variantKey,
       sets,
       note: draft.note,
     });
@@ -110,11 +95,7 @@ export default function LogPage() {
       <div className="no-scrollbar flex-1 px-[22px] pt-2" style={{ paddingBottom: 110 }}>
         {exercise.variants ? (
           <div className="mb-4">
-            <SegmentedControl
-              options={exercise.variants}
-              value={key}
-              onChange={(v) => setVariant(v)}
-            />
+            <SegmentedControl options={exercise.variants} value={variantKey} onChange={switchVariant} />
           </div>
         ) : null}
 
@@ -123,7 +104,7 @@ export default function LogPage() {
           <TextField
             type="date"
             value={draft.date}
-            onChange={(e) => setDraft((d) => (d ? { ...d, date: e.target.value } : d))}
+            onChange={(e) => setDraft((d) => ({ ...d, date: e.target.value }))}
           />
         </div>
 
@@ -178,7 +159,7 @@ export default function LogPage() {
           <TextArea
             placeholder="Optionale Notiz …"
             value={draft.note}
-            onChange={(e) => setDraft((d) => (d ? { ...d, note: e.target.value } : d))}
+            onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value }))}
           />
         </div>
       </div>

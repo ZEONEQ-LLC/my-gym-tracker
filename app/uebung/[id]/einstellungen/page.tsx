@@ -1,7 +1,7 @@
 "use client";
 
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { NumberField, TextArea, TextField } from "@/components/ui/fields";
 import { CloseIcon, PlusIcon } from "@/components/ui/icons";
 import { SectionLabel } from "@/components/ui/primitives";
@@ -9,58 +9,41 @@ import { Screen, ScreenHeader } from "@/components/ui/screen";
 import { CenteredNote } from "@/components/ui/states";
 import { StickyCta } from "@/components/ui/sticky-cta";
 import { useGymData, useUpsertExercise } from "@/lib/data/hooks";
-import { keyFor, type EditDraft, type ParamDraft } from "@/lib/domain/drafts";
-import { DEFAULT_TARGET_REPS, DEFAULT_TARGET_SETS } from "@/lib/domain/types";
+import { buildEditDraft, keyFor, type EditDraft } from "@/lib/domain/drafts";
+import { DEFAULT_TARGET_REPS, DEFAULT_TARGET_SETS, type Exercise } from "@/lib/domain/types";
 
 export default function EditSettingsPage() {
-  const router = useRouter();
   const { id } = useParams<{ id: string }>();
   const queryVariant = useSearchParams().get("v");
   const { data, isPending } = useGymData();
-  const upsertExercise = useUpsertExercise();
-
   const exercise = data?.exercises.find((e) => e.id === id);
-  const key = exercise ? keyFor(exercise, queryVariant) : "default";
-  const [draft, setDraft] = useState<EditDraft | null>(null);
 
-  useEffect(() => {
-    if (!exercise) return;
-    const settings = (exercise.settings && exercise.settings[key]) || {};
-    const rows: ParamDraft[] = Object.keys(settings).map((n) => ({ name: n, value: String(settings[n] ?? "") }));
-    setDraft({
-      rows,
-      note: exercise.note || "",
-      targetSets: String(exercise.targetSets || DEFAULT_TARGET_SETS),
-      targetReps: String(exercise.targetReps || DEFAULT_TARGET_REPS),
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [exercise?.id, key]);
-
-  if (isPending || (exercise && !draft)) {
+  if (isPending || !exercise) {
     return (
       <Screen>
         <ScreenHeader backLabel="Abbrechen" title="Einstellungen" />
-        <CenteredNote>Lädt …</CenteredNote>
-      </Screen>
-    );
-  }
-  if (!exercise || !draft) {
-    return (
-      <Screen>
-        <ScreenHeader backLabel="Abbrechen" title="Einstellungen" />
-        <CenteredNote>Übung nicht gefunden.</CenteredNote>
+        <CenteredNote>{isPending ? "Lädt …" : "Übung nicht gefunden."}</CenteredNote>
       </Screen>
     );
   }
 
-  const context = exercise.name + (exercise.variants ? " · " + key : "");
+  const variantKey = keyFor(exercise, queryVariant);
+  // Keyed so the draft re-initialises if exercise or variant changes.
+  return <EditForm key={`${exercise.id}:${variantKey}`} exercise={exercise} variantKey={variantKey} />;
+}
+
+function EditForm({ exercise, variantKey }: { exercise: Exercise; variantKey: string }) {
+  const router = useRouter();
+  const upsertExercise = useUpsertExercise();
+  const [draft, setDraft] = useState<EditDraft>(() => buildEditDraft(exercise, variantKey));
+
+  const context = exercise.name + (exercise.variants ? " · " + variantKey : "");
 
   function setTarget(field: "targetSets" | "targetReps", value: string) {
-    setDraft((d) => (d ? { ...d, [field]: value.replace(/[^0-9]/g, "") } : d));
+    setDraft((d) => ({ ...d, [field]: value.replace(/[^0-9]/g, "") }));
   }
   function setRow(i: number, field: "name" | "value", value: string) {
     setDraft((d) => {
-      if (!d) return d;
       const rows = d.rows.slice();
       rows[i] = { ...rows[i], [field]: value };
       return { ...d, rows };
@@ -68,24 +51,22 @@ export default function EditSettingsPage() {
   }
   function removeRow(i: number) {
     setDraft((d) => {
-      if (!d) return d;
       const rows = d.rows.slice();
       rows.splice(i, 1);
       return { ...d, rows };
     });
   }
   function addRow() {
-    setDraft((d) => (d ? { ...d, rows: [...d.rows, { name: "", value: "" }] } : d));
+    setDraft((d) => ({ ...d, rows: [...d.rows, { name: "", value: "" }] }));
   }
 
   async function save() {
-    if (!exercise || !draft) return;
     const obj: Record<string, string> = {};
     draft.rows.forEach((r) => {
       const n = (r.name || "").trim();
       if (n) obj[n] = r.value;
     });
-    const settings = { ...(exercise.settings || {}), [key]: obj };
+    const settings = { ...(exercise.settings || {}), [variantKey]: obj };
     await upsertExercise({
       ...exercise,
       settings,
@@ -148,7 +129,7 @@ export default function EditSettingsPage() {
 
         <div className="mt-5">
           <SectionLabel className="mb-2">Zu beachten</SectionLabel>
-          <TextArea placeholder="Optionale Notiz …" value={draft.note} onChange={(e) => setDraft((d) => (d ? { ...d, note: e.target.value } : d))} />
+          <TextArea placeholder="Optionale Notiz …" value={draft.note} onChange={(e) => setDraft((d) => ({ ...d, note: e.target.value }))} />
         </div>
       </div>
 
