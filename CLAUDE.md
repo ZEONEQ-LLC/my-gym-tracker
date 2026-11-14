@@ -17,7 +17,7 @@ npm run lint       # eslint . (flat config — Next 16 removed `next lint`)
 npm run typecheck  # tsc --noEmit
 ```
 
-Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (gitignored). Without them the proxy throws on every request.
+Requires `.env.local` with `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (gitignored). Without them the proxy throws on every request. `CRON_SECRET` is only needed to call `/api/keepalive` (never print its value).
 
 There is **no unit-test suite and no CI**. Verify changes by running the app in a browser: data lives in Supabase and is fetched client-side, so behaviour only exists at runtime. Playwright is a devDependency for this — load the browser once (`npx playwright install chromium`, system deps via `npx playwright install-deps chromium`), start the dev server, and drive the running app with a throwaway script kept outside the repo. Wait for hydration (`waitUntil: "networkidle"`) before typing into forms, or React resets the controlled inputs. Don't add a test runner or "verify by importing selectors" — go through the real UI. Browser verification needs a Supabase account; prefer reusing an existing test account over signing up new users (ask the user for credentials).
 
@@ -47,6 +47,7 @@ Three layers; components never touch storage directly:
 
 4. **`app/` + `components/`** — UI. Routes:
    - `/login` — sign in / sign up. **The only public route** — never gate it, or users lock themselves out.
+   - `/api/keepalive` — Supabase keep-alive for the Vercel cron. Excluded from the proxy matcher (the cron has no session) and guarded by `Authorization: Bearer $CRON_SECRET` instead; must stay a dynamic route so every call reaches Postgres.
    - `(shell)/` route group = tab shell with `BottomTabBar`: `/` (Übungen), `/verlauf`, `/profil` (includes logout).
    - `uebung/` (outside the group, so **no tab bar**): `neu`, `[id]`, `[id]/eintragen`, `[id]/einstellungen`.
    - Navigation between list↔detail↔log uses `router.back()` so "return to where you came from" works without tracking it explicitly.
@@ -68,7 +69,8 @@ Three layers; components never touch storage directly:
 
 - Vercel is linked to the GitHub repo: every PR gets a **Preview**, merges to `main` deploy **Production**.
 - `NEXT_PUBLIC_SUPABASE_*` must be set in Vercel for **both Preview and Production**; missing vars show up as `MIDDLEWARE_INVOCATION_FAILED` (500 on every route).
-- Workflow: feature branch → PR → squash merge. Don't push to `main` directly.
+- Workflow: feature branch → PR → squash merge. Don't push to `main` directly. GitHub auto-deletes merged branches.
+- **Supabase free tier pauses after 7 days of inactivity.** `vercel.json` schedules a daily Vercel Cron (Hobby plan: max once per day) hitting `/api/keepalive`, which runs one `count` query. It only runs on the Production deployment and only works if `CRON_SECRET` is set in Vercel Production (otherwise every call is a 401 and the project will pause).
 
 ## Version constraints (as of Nov 2026)
 
