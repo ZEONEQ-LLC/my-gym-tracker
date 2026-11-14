@@ -11,10 +11,11 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  // Run on all paths except static assets, image files and the Supabase
-  // keep-alive cron endpoint (it has no user session and checks CRON_SECRET
-  // itself — see app/api/keepalive/route.ts).
+  // Run on all paths except static assets, image files (incl. the app icons),
+  // the web manifest (browsers fetch it without cookies, so it would always be
+  // redirected to /login) and the Supabase keep-alive cron endpoint (it has no
+  // user session and checks CRON_SECRET itself — see app/api/keepalive/route.ts).
   matcher: [
-    "/((?!_next/static|_next/image|favicon.ico|api/keepalive(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+    "/((?!_next/static|_next/image|favicon.ico|manifest\\.webmanifest$|api/keepalive(?:/|$)|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

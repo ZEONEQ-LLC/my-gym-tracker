@@ -21,6 +21,7 @@ npm run build      # Production-Build
 npm start          # Production-Server (nach build)
 npm run lint       # ESLint (Flat-Config in eslint.config.mjs)
 npm run typecheck  # tsc --noEmit
+npm run icons      # App-Icons neu erzeugen (scripts/generate-icons.mjs)
 ```
 
 `build`, `lint` und `typecheck` laufen sauber durch. Der komplette Nutzer-Flow wurde zuletzt im November 2026 nach dem Abhängigkeits-Update im Browser gegen Supabase verifiziert (Login, Route-Schutz, Übung mit Varianten anlegen, Einstellungen bearbeiten, Training eintragen inkl. Varianten-Wechsel, Persistenz, Akzent, Logout).
@@ -79,6 +80,16 @@ Der gesamte Zustand eines Nutzers (`GymData = { exercises, profile }`) wird übe
 - Workflow: Feature-Branch → PR → Squash-Merge auf `main`. GitHub löscht gemergte Branches automatisch.
 - **Supabase Keep-alive:** Das Gratis-Paket pausiert ein Projekt nach 7 Tagen ohne Aktivität. Ein **Vercel Cron Job** (`vercel.json`, täglich 06:00 UTC) ruft `/api/keepalive` auf, das eine einzige billige Abfrage an Postgres schickt. Der Endpunkt antwortet nur mit gültigem `Authorization: Bearer <CRON_SECRET>` (Vercel sendet den Header automatisch, sobald `CRON_SECRET` gesetzt ist) und ist vom Proxy-Gating ausgenommen. Crons laufen nur auf dem Production-Deployment; manuell auslösen lässt sich der Job in Vercel unter Settings → Cron Jobs.
 
+## App-Icon
+
+Hantel (wie im „Übungen"-Tab) auf Emerald. Alle Varianten entstehen aus **einer** SVG-Quelle in `scripts/generate-icons.mjs` — Änderungen dort machen und `npm run icons` ausführen, die Dateien nie von Hand bearbeiten:
+
+- `app/icon.svg` + `app/favicon.ico` — Browser-Tab (fettere Variante, lesbar bei 16 px)
+- `app/apple-icon.png` — iPhone-Homescreen (randlos, iOS rundet selbst)
+- `public/icons/*` + `app/manifest.ts` — Android-Homescreen (inkl. „maskable"-Variante)
+
+Solange ein Deployment hinter Vercel Authentication liegt, kann Android das Manifest nicht laden (Browser holen es ohne Cookies) und fällt auf das iOS-Icon zurück; Tab-Icon und iPhone sind nicht betroffen.
+
 ## Start-Daten
 
 Ein neues Konto startet **leer** (Empty-States sind Teil des Designs). Zum Testen lädt der Profil-Screen unter „Entwicklung" die 8 Beispiel-Übungen (`lib/domain/seed.ts`) bzw. löscht alle Übungen.
@@ -95,6 +106,8 @@ lib/data/             Repository-Interface, Supabase- + localStorage-Impl, Facto
 lib/supabase/         Browser-/Server-Client, Session-Refresh + Gating, AuthProvider
 lib/theme/            Akzent-Themes
 proxy.ts              Next-16-Proxy (Session + Route-Schutz)
+scripts/              generate-icons.mjs (App-Icons aus einer SVG-Quelle)
+public/icons/         Manifest-Icons (generiert)
 supabase/schema.sql   Datenbank-Schema inkl. RLS und Trigger
 ```
 

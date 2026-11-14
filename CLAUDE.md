@@ -63,6 +63,7 @@ Three layers; components never touch storage directly:
 - **Design tokens** live in `app/globals.css` under `@theme` (Tailwind v4 CSS-first). Fonts via `next/font` (Hanken Grotesk + JetBrains Mono → `font-sans`/`font-mono`).
 - **No device frame.** Screens fill the viewport and respect `env(safe-area-inset-*)`; the app column is capped at `max-w-[480px]`.
 - **New accounts start empty.** Seed/reset live under "Entwicklung" on the Profil screen and act on the signed-in user's Supabase rows; don't auto-seed.
+- **App icons are generated.** `scripts/generate-icons.mjs` holds the single SVG design and writes `app/icon.svg`, `app/favicon.ico`, `app/apple-icon.png` and `public/icons/*`; change the script and run `npm run icons`, never edit the outputs. The proxy matcher excludes `manifest.webmanifest` (browsers fetch it without cookies); Next can't add `crossorigin="use-credentials"` to the manifest link, so Vercel-Authentication-protected deployments can't serve it.
 - When adding derived/computed values, put them in `lib/domain/selectors.ts` as pure functions — keep components thin.
 
 ## Deployment & workflow
